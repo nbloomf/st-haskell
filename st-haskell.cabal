@@ -1,0 +1,13 @@
+Name:           st-haskell
+Version:        0.0
+Cabal-Version:  >= 1.2
+License:        AllRightsReserved
+Author:         Nathan Bloomfield
+Synopsis:       Haskell implementation of the utilities
+                in Software Tools by Kernighan and Plauger
+Build-Type:     Simple
+
+Executable sth-copy
+  Main-Is:        SoftwareTools/Copy.hs
+  Hs-Source-Dirs: src/
+  build-depends:  base
