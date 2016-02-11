@@ -8,6 +8,11 @@ Synopsis:       Haskell implementation of the utilities
 Build-Type:     Simple
 
 Executable sth-copy
-  Main-Is:        SoftwareTools/Copy.hs
-  Hs-Source-Dirs: src/
+  main-is:        SoftwareTools/Copy.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-charcount
+  main-is:        SoftwareTools/CharCount.hs
+  hs-source-dirs: src/
   build-depends:  base
