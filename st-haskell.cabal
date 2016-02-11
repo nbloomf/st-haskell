@@ -16,3 +16,8 @@ Executable sth-charcount
   main-is:        SoftwareTools/CharCount.hs
   hs-source-dirs: src/
   build-depends:  base
+
+Executable sth-linecount
+  main-is:        SoftwareTools/LineCount.hs
+  hs-source-dirs: src/
+  build-depends:  base
