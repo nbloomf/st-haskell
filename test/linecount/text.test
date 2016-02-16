@@ -1,0 +1,9 @@
+sth-linecount
+<<<
+here's a line
+here's another line
+
+there was a line there ↑ and here's another
+>>>
+4
+>>>= 0
