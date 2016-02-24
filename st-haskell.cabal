@@ -21,3 +21,13 @@ Executable sth-linecount
   main-is:        SoftwareTools/LineCount.hs
   hs-source-dirs: src/
   build-depends:  base
+
+Executable sth-wordcount
+  main-is:        SoftwareTools/WordCount.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-sentcount
+  main-is:        SoftwareTools/SentCount.hs
+  hs-source-dirs: src/
+  build-depends:  base

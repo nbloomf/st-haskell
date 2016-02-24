@@ -5,7 +5,8 @@ module Main where
 import Data.Foldable (foldl')
 
 main :: IO ()
-main = getContents >>= (putStrLn . show . count)
+main = getContents
+  >>= (putStrLn . show . count)
 
 count :: [a] -> Integer
 count = foldl' inc 0
