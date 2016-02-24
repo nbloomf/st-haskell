@@ -8,26 +8,31 @@ Synopsis:       Haskell implementation of the utilities
 Build-Type:     Simple
 
 Executable sth-copy
-  main-is:        SoftwareTools/Copy.hs
+  main-is:        SoftwareTools/Copy/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-charcount
-  main-is:        SoftwareTools/CharCount.hs
+  main-is:        SoftwareTools/CharCount/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-linecount
-  main-is:        SoftwareTools/LineCount.hs
+  main-is:        SoftwareTools/LineCount/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-glyphcount
+  main-is:        SoftwareTools/GlyphCount/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-wordcount
-  main-is:        SoftwareTools/WordCount.hs
+  main-is:        SoftwareTools/WordCount/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-sentcount
-  main-is:        SoftwareTools/SentCount.hs
+  main-is:        SoftwareTools/SentCount/Main.hs
   hs-source-dirs: src/
   build-depends:  base

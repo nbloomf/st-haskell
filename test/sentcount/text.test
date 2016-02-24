@@ -1,6 +1,6 @@
 sth-sentcount
 <<<
-Here is some text with several sentences. It just keeps going. "Here's a quoted sentence. Is the count accurate?" What about this... Harvey is a cool name. (Wow.)
+Here is some text with several sentences. It just keeps going. "Here's a quoted sentence. Is the count accurate?" What about this... ellipses are really sub-sentence punctuation like commas and semicolons. Harvey is a cool name. (Wow.)
 >>>
-6
+7
 >>>= 0
