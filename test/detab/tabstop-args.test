@@ -1,0 +1,8 @@
+sth-detab 8 10 4
+<<<
+blah	blah	blah	blah
+blah	blah
+>>>
+blah    blah      blahblah
+blah    blah      
+>>>= 0

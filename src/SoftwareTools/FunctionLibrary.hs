@@ -1,15 +1,18 @@
 module SoftwareTools.FunctionLibrary (
   catchEOF,
 
+  readDecimalNat, readPosIntList,
+
   count, break2,
 
-  getLines, getWords, getSentences, getGlyphs
+  getLines, getWords, getSentences, getGlyphs,
+  convertTabStops
 ) where
 
 import System.IO.Error (isEOFError, catchIOError)
 import System.Exit (exitSuccess, exitFailure)
 import Data.Foldable (foldl')
-import Data.List (break, unfoldr, isPrefixOf, isSuffixOf, intercalate)
+import Data.List (break, unfoldr, isPrefixOf, isSuffixOf, intercalate, lookup)
 import Data.Char (isSpace, isUpper, isMark)
 
 
@@ -33,6 +36,35 @@ catchEOF x = catchIOError x handler
 
 
 -- |
+-- = Parsing Utilities
+
+{-|
+  Convert a list of strings of decimal digits
+  to a list of integers. (Natural numbers only.)
+-}
+readPosIntList :: [String] -> Maybe [Int]
+readPosIntList =
+  sequence . map (guardMaybe (>0)) . map readDecimalNat
+
+
+{-|
+  Convert a string (decimal digits) to an integer.
+  (Natural numbers only.)
+-}
+readDecimalNat :: String -> Maybe Int
+readDecimalNat xs = do
+  ys <- sequence $ map decToInt $ reverse xs
+  return $ sum $ zipWith (*) ys [10^t | t <- [0..]]
+  where
+    decToInt :: Char -> Maybe Int
+    decToInt x = lookup x
+      [ ('0',0), ('1',1), ('2',2), ('3',3), ('4',4)
+      , ('5',5), ('6',6), ('7',7), ('8',8), ('9',9)
+      ]
+
+
+
+-- |
 -- = List Utilities
 
 {-|
@@ -51,13 +83,62 @@ count = foldl' inc 0
   whether to split at a given index.
 -}
 break2 :: (a -> a -> Bool) -> [a] -> ([a],[a])
-break2 p xs = foo [] xs
+break2 p xs = accum [] xs
   where
-    foo acc []  = (reverse acc, [])
-    foo acc [y] = (reverse (y:acc), [])
-    foo acc (y1:y2:ys) = if p y1 y2
-      then (reverse (y1:acc), y2:ys)
-      else foo (y1:acc) (y2:ys)
+    accum zs []  = (reverse zs, [])
+    accum zs [y] = (reverse (y:zs), [])
+    accum zs (y1:y2:ys) = if p y1 y2
+      then (reverse (y1:zs), y2:ys)
+      else accum (y1:zs) (y2:ys)
+
+
+{-|
+  'spanAtMostWhile' breaks at most k initial
+  elements which satisfy predicate p.
+-}
+spanAtMostWhile :: Int -> (a -> Bool) -> [a] -> Maybe ([a],[a])
+spanAtMostWhile k p xs
+  | k < 0     = Nothing
+  | otherwise = Just $ acc k [] xs
+  where
+    acc 0 as bs = (reverse as, bs)
+    acc _ as [] = (reverse as, [])
+    acc t as (b:bs) = if p b
+      then acc (t-1) (b:as) bs
+      else (reverse as, b:bs)
+
+
+{-|
+  'padToByAfter' takes an integer k, a thing
+  z, and a list xs, and pads xs to length k
+  by postpending copies of z. If xs is longer
+  than k there is an error. (We take "pad" very
+  seriously.)
+-}
+padToByAfter :: Int -> a -> [a] -> Maybe [a]
+padToByAfter k z xs
+  | k < 0     = Nothing
+  | otherwise = acc k [] xs
+  where
+    acc 0 as [] = Just $ reverse as
+    acc 0 _  _  = Nothing
+    acc t as [] = Just $ reverse as ++ replicate t z
+    acc t as (b:bs) = acc (t-1) (b:as) bs
+
+
+
+-- |
+-- = Maybe Utilities
+
+{-|
+
+-}
+guardMaybe :: (a -> Bool) -> Maybe a -> Maybe a
+guardMaybe p x = do
+  y <- x
+  case p y of
+    True  -> Just y
+    False -> Nothing
 
 
 
@@ -153,3 +234,36 @@ getGlyphs = unfoldr firstGlyph
       else do
         let (as,bs) = break (not . isMark) xs
         Just (x:as, bs)
+
+
+{-|
+  'convertTabStops' takes a list of tab stop widths
+  and a string and replaces all '\t's in the string
+  with spaces, padded to the given tab stop widths
+  in order. If the string has more '\t's than there
+  are tab stop widths, then the final tab stop width
+  is repeated indefinitely. If no tab stop widths are
+  given the function returns Nothing.
+-}
+convertTabStops :: [Int] -> String -> Maybe String
+convertTabStops [] _  = Nothing
+convertTabStops ks xs = accum [] ks xs
+  where
+    accum zs _   "" = Just $ concat $ reverse zs
+    accum zs [t] ys = do
+      (as,bs) <- splitTabStop t ys
+      accum (as:zs) [t] bs
+    accum zs (t:ts) ys = do
+      (as,bs) <- splitTabStop t ys
+      accum (as:zs) ts bs
+
+    splitTabStop :: Int -> String -> Maybe (String, String)
+    splitTabStop k xs
+      | k <= 0    = Nothing
+      | otherwise = do
+          (as,bs) <- spanAtMostWhile k (/= '\t') xs
+          cs      <- padToByAfter k ' ' as
+          case bs of
+            ""      -> return (cs,"")
+            '\t':ds -> return (cs,ds)
+            ds      -> return (cs,ds)

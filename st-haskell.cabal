@@ -36,3 +36,8 @@ Executable sth-sentcount
   main-is:        SoftwareTools/SentCount/Main.hs
   hs-source-dirs: src/
   build-depends:  base
+
+Executable sth-detab
+  main-is:        SoftwareTools/DeTab/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
