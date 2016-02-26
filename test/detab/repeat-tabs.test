@@ -1,0 +1,6 @@
+sth-detab
+<<<
+		hello
+>>>
+                hello   
+>>>= 0

@@ -6,7 +6,7 @@ module SoftwareTools.FunctionLibrary (
   count, break2,
 
   getLines, getWords, getSentences, getGlyphs,
-  convertTabStops
+  convertTabStops, composeGlyph
 ) where
 
 import System.IO.Error (isEOFError, catchIOError)
@@ -267,3 +267,20 @@ convertTabStops ks xs = accum [] ks xs
             ""      -> return (cs,"")
             '\t':ds -> return (cs,ds)
             ds      -> return (cs,ds)
+
+
+{-|
+  Replace glyphs (defined here as a noncombining
+  character followed by zero or more combining
+  characters) by precomposed versions.
+-}
+composeGlyph :: String -> String
+composeGlyph ""  = ""
+composeGlyph [c] = [c]
+composeGlyph x   = case lookup x pairs of
+  Just y  -> y
+  Nothing -> x
+  where
+    pairs =
+      [ ("A\0301","Á"), ("C\0301","Ć"), ("E\0301","É")
+      ]
