@@ -1,0 +1,6 @@
+sth-charfullwidth
+<<<
+hello {world}
+>>>
+ｈｅｌｌｏ　｛ｗｏｒｌｄ｝
+>>>= 0
