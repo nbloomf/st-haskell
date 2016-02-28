@@ -2,9 +2,10 @@
 
 module Main where
 
-import System.Environment (getArgs)
-import Data.List (unwords)
-import Control.Arrow ((>>>))
+import SoftwareTools.Lib
+  ((>>>), getArgs, unwords, exitSuccess)
 
 main :: IO ()
-main = getArgs >>= (unwords >>> putStrLn)
+main = getArgs
+  >>= (unwords >>> putStrLn)
+  >>  exitSuccess

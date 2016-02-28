@@ -3,7 +3,8 @@
 module Main where
 
 import Control.Arrow ((>>>))
-import SoftwareTools.FunctionLibrary (count, getWords)
+import SoftwareTools.Lib.List (count)
+import SoftwareTools.Lib.Text (getWords)
 
 main :: IO ()
 main = getContents >>=

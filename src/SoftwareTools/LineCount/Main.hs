@@ -2,8 +2,9 @@
 
 module Main where
 
-import Control.Arrow ((>>>))
-import SoftwareTools.FunctionLibrary (getLines, count)
+import SoftwareTools.Lib ((>>>))
+import SoftwareTools.Lib.List (count)
+import SoftwareTools.Lib.Text (getLines)
 
 main :: IO ()
 main = getContents >>=

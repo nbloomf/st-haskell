@@ -2,12 +2,12 @@
 
 module Main where
 
-import System.Environment (getArgs, getProgName)
-import System.Exit (exitFailure, exitSuccess)
-import System.IO (hPutStrLn, stderr)
-import Control.Arrow ((>>>))
-import SoftwareTools.FunctionLibrary
-  (getLines, insertTabStops, readPosIntList)
+import SoftwareTools.Lib
+  ((>>>), exitSuccess, exitFailure, getArgs)
+import SoftwareTools.Lib.Read  (readPosIntList)
+import SoftwareTools.Lib.Text  (getLines)
+import SoftwareTools.Lib.List  (spanAtMostWhile, padToByAfter)
+import SoftwareTools.Lib.Error (reportErrorMsgs)
 
 
 main :: IO ()
@@ -19,11 +19,16 @@ main = do
   ts <- case readPosIntList args of
     Just [] -> return [8]
     Just ks -> return ks
-    Nothing -> errorParsingArgs
+    Nothing -> reportErrorMsgs
+                 ["tab widths must be positive integers."
+                 ] >> exitFailure
 
   -- Entab a single line ln with tabstops ts.
   let entab ln = case insertTabStops ts ln of
-                   Nothing -> errorDeTabbing ts ln
+                   Nothing -> reportErrorMsgs
+                                [ "LINE: " ++ ln
+                                , "TABS: " ++ show ts
+                                ] >> exitFailure
                    Just cs -> putStrLn cs
 
   -- Do it!
@@ -32,22 +37,36 @@ main = do
     >> exitSuccess
 
 
--- We don't bother trying to distinguish among
--- different possible errors; just make the user
--- try again. (Worse is better!)
-errorParsingArgs :: IO a
-errorParsingArgs = do
-  name <- getProgName
-  hPutStrLn stderr $
-    name ++ " error: tab widths must be positive natural numbers in base 10."
-  exitFailure
+{-|
+  'insertTabStops' chops the string xs into substrings
+  of lengths ks, replaces any trailing spaces on the 
+  substrings by tabs, and concatenates. It is a partial
+  inverse of 'convertTabStops'.
+-}
+insertTabStops :: [Int] -> String -> Maybe String
+insertTabStops [] xs = Just xs
+insertTabStops ks xs = accum [] ks xs
+  where
+    accum zs _ "" = Just $ concat $ reverse zs
+    accum zs [t] ys = do
+      (as,bs) <- splitColumn t ys
+      accum (as:zs) [t] bs
+    accum zs (t:ts) ys = do
+      (as,bs) <- splitColumn t ys
+      accum (as:zs) ts bs
 
-
--- This should not happen.
-errorDeTabbing :: [Int] -> String -> IO a
-errorDeTabbing ts ln = do
-  name <- getProgName
-  hPutStrLn stderr $ name ++ " error"
-  hPutStrLn stderr $ "LINE: " ++ ln
-  hPutStrLn stderr $ "TABS: " ++ show ts
-  exitFailure
+    splitColumn :: Int -> String -> Maybe (String, String)
+    splitColumn k xs
+      | k  <= 0   = Nothing
+      | xs == ""  = Nothing
+      | otherwise = do
+          let (as,bs) = splitAt k xs
+          let munch = dropWhile (== ' ')
+          let cs = reverse as
+          let ds = if bs == ""
+                     then let es = reverse $ munch cs in
+                       if es == "" then "\t" else es
+                     else case cs of
+                       ' ':_ -> reverse ('\t':(munch cs))
+                       otherwise -> as
+          Just (ds,bs)

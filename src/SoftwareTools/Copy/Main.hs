@@ -2,8 +2,8 @@
 
 module Main where
 
-import System.IO (getChar, putChar)
-import SoftwareTools.FunctionLibrary (catchEOF)
+import SoftwareTools.Lib (getChar, putChar)
+import SoftwareTools.Lib.Error (catchEOF)
 
 main :: IO ()
 main = catchEOF getChar >>= putChar >> main

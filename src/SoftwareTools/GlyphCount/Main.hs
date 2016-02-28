@@ -2,8 +2,9 @@
 
 module Main where
 
-import Control.Arrow ((>>>))
-import SoftwareTools.FunctionLibrary (count, getGlyphs)
+import SoftwareTools.Lib ((>>>))
+import SoftwareTools.Lib.List (count)
+import SoftwareTools.Lib.Text (getGlyphs)
 
 main :: IO ()
 main = getContents >>=

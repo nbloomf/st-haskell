@@ -2,7 +2,7 @@
 
 module Main where
 
-import SoftwareTools.FunctionLibrary (count)
+import SoftwareTools.Lib.List (count)
 
 main :: IO ()
 main = getContents
