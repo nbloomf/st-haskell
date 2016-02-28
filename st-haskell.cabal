@@ -51,3 +51,19 @@ Executable sth-charfullwidth
   main-is:        SoftwareTools/CharFullwidth/Main.hs
   hs-source-dirs: src/
   build-depends:  base
+
+Executable sth-entab
+  main-is:        SoftwareTools/EnTab/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-echo
+  main-is:        SoftwareTools/Echo/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-overstrike
+  main-is:        SoftwareTools/Overstrike/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+

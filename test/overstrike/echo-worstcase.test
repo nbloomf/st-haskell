@@ -1,0 +1,4 @@
+echo "   a\b\b\b\b  b\b\b\b c\b\bd" | sth-overstrike
+>>>
+ dcba
+>>>= 0

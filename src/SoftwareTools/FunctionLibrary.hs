@@ -6,14 +6,16 @@ module SoftwareTools.FunctionLibrary (
   count, break2,
 
   getLines, getWords, getSentences, getGlyphs,
-  convertTabStops, composeGlyph, toFullwidth
+  convertTabStops, insertTabStops, composeGlyph, toFullwidth,
+  overstrikeLines
 ) where
 
 import System.IO.Error (isEOFError, catchIOError)
 import System.Exit (exitSuccess, exitFailure)
 import Data.Foldable (foldl')
-import Data.List (break, unfoldr, isPrefixOf, isSuffixOf, intercalate, lookup)
+import Data.List (break, unfoldr, isPrefixOf, isSuffixOf, intercalate, lookup, splitAt, dropWhile, sortBy)
 import Data.Char (isSpace, isUpper, isMark)
+import Control.Arrow ((>>>))
 
 
 
@@ -124,6 +126,52 @@ padToByAfter k z xs
     acc 0 _  _  = Nothing
     acc t as [] = Just $ reverse as ++ replicate t z
     acc t as (b:bs) = acc (t-1) (b:as) bs
+
+
+{-|
+  A subsequence of a list is a selection of some
+  elements in increasing index order. A subsequence
+  is monotone by a given relation p if any two 
+  consecutive elements in the subsequence satisfy p.
+  A subsequence, monotone by some relation, is said to
+  be maximal if it includes the head of the list and
+  cannot be made longer. Every list has a *unique* 
+  maximal monotone subsequence by a given relation.
+  'maxMonoSubseqsBy' returns the list of these
+  maximal monotone subsequences in order.
+-}
+maxMonoSubseqsBy :: (a -> a -> Bool) -> [a] -> [[a]]
+maxMonoSubseqsBy p = unfoldr maxMonoSubseq
+  where
+    maxMonoSubseq [] = Nothing
+    maxMonoSubseq xs = accum [] [] xs
+
+    accum as bs [] = Just (reverse as, reverse bs)
+    accum [] bs (z:zs) = accum [z] bs zs
+    accum (a:as) bs (z:zs) = if p a z
+      then accum (z:a:as) bs zs
+      else accum (a:as) (z:bs) zs
+
+
+{-|
+  A *sparse list* is a list of element-index pairs
+  and a filler element. It allows a more compact
+  representation of large lists consisting of entries
+  that are mostly some fixed element. 'fromSparseList'
+  converts sparse lists to the standard list form.
+  Note that by convention, if a given index appears
+  more than once in a sparse list, the second has
+  no effect.
+-}
+fromSparseList :: a -> [(a,Int)] -> [a]
+fromSparseList x [] = []
+fromSparseList x ys = accum 1 [] ys
+  where
+    accum _ as [] = reverse as
+    accum t as ((z,h):zs) = case compare t h of
+      EQ -> accum (t+1) (z:as) zs
+      LT -> accum (t+1) (x:as) ((z,h):zs)
+      GT -> accum (t+1) as zs
 
 
 
@@ -243,7 +291,8 @@ getGlyphs = unfoldr firstGlyph
   in order. If the string has more '\t's than there
   are tab stop widths, then the final tab stop width
   is repeated indefinitely. If no tab stop widths are
-  given the function returns Nothing.
+  given the function returns Nothing. This function is
+  a partial inverse of 'insertTabStops'.
 -}
 convertTabStops :: [Int] -> String -> Maybe String
 convertTabStops [] _  = Nothing
@@ -262,11 +311,50 @@ convertTabStops ks xs = accum [] ks xs
       | k <= 0    = Nothing
       | otherwise = do
           (as,bs) <- spanAtMostWhile k (/= '\t') xs
-          cs      <- padToByAfter k ' ' as
-          case bs of
-            ""      -> return (cs,"")
-            '\t':ds -> return (cs,ds)
-            ds      -> return (cs,ds)
+          if bs == ""
+            then do
+              let cs = reverse $ dropWhile (==' ') $ reverse as
+              return (cs,"")
+            else do
+              cs <- padToByAfter k ' ' as
+              case bs of
+                '\t':ds -> return (cs,ds)
+                ds      -> return (cs,ds)
+
+
+{-|
+  'insertTabStops' chops the string xs into substrings
+  of lengths ks, replaces any trailing spaces on the 
+  substrings by tabs, and concatenates. It is a partial
+  inverse of 'convertTabStops'.
+-}
+insertTabStops :: [Int] -> String -> Maybe String
+insertTabStops [] xs = Just xs
+insertTabStops ks xs = accum [] ks xs
+  where
+    accum zs _ "" = Just $ concat $ reverse zs
+    accum zs [t] ys = do
+      (as,bs) <- splitColumn t ys
+      accum (as:zs) [t] bs
+    accum zs (t:ts) ys = do
+      (as,bs) <- splitColumn t ys
+      accum (as:zs) ts bs
+
+    splitColumn :: Int -> String -> Maybe (String, String)
+    splitColumn k xs
+      | k  <= 0   = Nothing
+      | xs == ""  = Nothing
+      | otherwise = do
+          let (as,bs) = splitAt k xs
+          let munch = dropWhile (== ' ')
+          let cs = reverse as
+          let ds = if bs == ""
+                     then let es = reverse $ munch cs in
+                       if es == "" then "\t" else es
+                     else case cs of
+                       ' ':_ -> reverse ('\t':(munch cs))
+                       otherwise -> as
+          Just (ds,bs)
 
 
 {-|
@@ -293,6 +381,33 @@ composeGlyph [x, '\x0301'] = case lookup x acute of
       ]
 composeGlyph x = x
 
+
+{-|
+  'overstrikeLines' takes a string which may
+  include some backspace characters (but no newlines!)
+  and returns a list of lines which reproduce the
+  effect of this sequence of typewriter keypresses
+  when fed to a line printer by overstriking.
+-}
+overstrikeLines :: String -> [String]
+overstrikeLines =
+  columnIndices
+    >>> filter (\(c,_) -> c /= ' ')          -- try omitting
+    >>> sortBy (\(_,a) (_,b) -> compare a b) -- these lines
+    >>> maxMonoSubseqsBy p
+    >>> map (fromSparseList ' ')
+  where
+    p u v = if snd u < snd v
+              then True else False
+
+    -- Assign a column index 
+    columnIndices :: String -> [(Char,Int)]
+    columnIndices = accum [] 1
+      where
+        accum zs _ ""     = reverse zs
+        accum zs k (c:cs) = case c of
+          '\b'      -> accum zs (max 1 (k-1)) cs
+          otherwise -> accum ((c,k):zs) (k+1) cs
 
 
 {-|

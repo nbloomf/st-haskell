@@ -1,0 +1,5 @@
+echo "hello\b\bworld" | sth-overstrike
+>>>
+ hellorld
++   wo
+>>>= 0

@@ -1,0 +1,4 @@
+echo "\b\b\b\bhello world" | sth-overstrike
+>>>
+ hello world
+>>>= 0

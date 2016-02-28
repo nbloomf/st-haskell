@@ -1,0 +1,8 @@
+sth-entab | sth-detab
+<<<
+blah    blah    blah
+blah    blah
+>>>
+blah    blah    blah
+blah    blah
+>>>= 0

@@ -1,0 +1,4 @@
+sth-echo "hello        world"
+>>>
+hello        world
+>>>= 0

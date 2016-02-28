@@ -1,0 +1,8 @@
+sth-entab 8 10 4
+<<<
+blah    blah      blahblah
+blah	blah
+>>>
+blah	blah	blahblah
+blah	blah
+>>>= 0

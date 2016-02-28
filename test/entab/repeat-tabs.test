@@ -1,6 +1,6 @@
-sth-detab
+sth-entab
 <<<
-		hello
->>>
                 hello
+>>>
+		hello
 >>>= 0
