@@ -67,3 +67,12 @@ Executable sth-overstrike
   hs-source-dirs: src/
   build-depends:  base
 
+Executable sth-unescape
+  main-is:        SoftwareTools/UnEscape/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-charecho
+  main-is:        SoftwareTools/CharEcho/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base

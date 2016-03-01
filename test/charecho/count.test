@@ -1,0 +1,4 @@
+sth-charecho "hello" | sth-charcount
+>>>
+5
+>>>= 0

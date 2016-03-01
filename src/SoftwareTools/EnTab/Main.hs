@@ -34,7 +34,7 @@ main = do
   -- Do it!
   getContents
     >>= (getLines >>> map entab >>> sequence_)
-    >> exitSuccess
+    >>  exitSuccess
 
 
 {-|

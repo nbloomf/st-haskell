@@ -1,0 +1,5 @@
+sth-echo "hello\nworld" | sth-unescape
+>>>
+hello
+world
+>>>= 0

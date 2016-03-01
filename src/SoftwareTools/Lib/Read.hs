@@ -1,5 +1,5 @@
 module SoftwareTools.Lib.Read (
-  readDecimalNat, readPosIntList,
+  readDecimalNat, readPosIntList, readHexadecimalNat
 ) where
 
 import Control.Arrow ((>>>))
@@ -30,4 +30,22 @@ readDecimalNat xs = do
     decToInt x = lookup x
       [ ('0',0), ('1',1), ('2',2), ('3',3), ('4',4)
       , ('5',5), ('6',6), ('7',7), ('8',8), ('9',9)
+      ]
+
+
+{-|
+  Convert a string (hexadecimal digits) to an integer.
+  (Natural numbers only.)
+-}
+readHexadecimalNat :: String -> Maybe Int
+readHexadecimalNat xs = do
+  ys <- sequence $ map hexToInt $ reverse xs
+  return $ sum $ zipWith (*) ys [16^t | t <- [0..]]
+  where
+    hexToInt :: Char -> Maybe Int
+    hexToInt x = lookup x
+      [ ('0',0), ('1',1), ('2',2), ('3',3), ('4',4)
+      , ('5',5), ('6',6), ('7',7), ('8',8), ('9',9)
+      , ('a',10), ('b',11), ('c',12), ('d',13), ('e',14), ('f',15)
+      , ('A',10), ('B',11), ('C',12), ('D',13), ('E',14), ('F',15)
       ]

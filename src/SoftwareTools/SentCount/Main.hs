@@ -2,11 +2,12 @@
 
 module Main where
 
-import Control.Arrow ((>>>))
-import Data.List (unfoldr, intercalate, isPrefixOf, isSuffixOf)
-import Data.Char (isUpper)
+import SoftwareTools.Lib
+  ((>>>), unfoldr, intercalate,
+   isPrefixOf, isSuffixOf, isUpper)
 import SoftwareTools.Lib.List (count, break2)
 import SoftwareTools.Lib.Text (getWords)
+
 
 main :: IO ()
 main = getContents >>=

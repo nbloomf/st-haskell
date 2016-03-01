@@ -1,0 +1,6 @@
+sth-echo "hello\nworld\b\b\bi" | sth-unescape | sth-overstrike
+>>>
+ hello
+ world
++  i
+>>>= 0
