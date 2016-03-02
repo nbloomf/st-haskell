@@ -2,8 +2,10 @@
 
 module Main where
 
+import SoftwareTools.Lib.IO (charFilter, putNewLine)
 import SoftwareTools.Lib.List (count)
 
 main :: IO ()
-main = getContents
-  >>= (putStrLn . show . count)
+main = do
+  charFilter (show . count)
+  putNewLine

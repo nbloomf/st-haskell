@@ -1,6 +1,7 @@
 module SoftwareTools.Lib.List (
   count, applyListMap, break2, fromSparseList,
-  spanAtMostWhile, padToByAfter, maxMonoSubseqsBy
+  spanAtMostWhile, padToByAfter, maxMonoSubseqsBy,
+  unfoldrMaybe
 ) where
 
 import Data.Foldable (foldl')
@@ -81,10 +82,10 @@ fromSparseList x ys = accum 1 [] ys
   'spanAtMostWhile' breaks at most k initial
   elements which satisfy predicate p.
 -}
-spanAtMostWhile :: Int -> (a -> Bool) -> [a] -> Maybe ([a],[a])
+spanAtMostWhile :: Int -> (a -> Bool) -> [a] -> ([a],[a])
 spanAtMostWhile k p xs
-  | k < 0     = Nothing
-  | otherwise = Just $ acc k [] xs
+  | k < 0     = ([],xs)
+  | otherwise = acc k [] xs
   where
     acc 0 as bs = (reverse as, bs)
     acc _ as [] = (reverse as, [])
@@ -95,20 +96,14 @@ spanAtMostWhile k p xs
 
 {-|
   'padToByAfter' takes an integer k, a thing
-  z, and a list xs, and pads xs to length k
+  z, and a list xs, and returns a list of length
+  k consisting of the elements of xs pads xs to length k
   by postpending copies of z. If xs is longer
   than k there is an error. (We take "pad" very
   seriously.)
 -}
-padToByAfter :: Int -> a -> [a] -> Maybe [a]
-padToByAfter k z xs
-  | k < 0     = Nothing
-  | otherwise = acc k [] xs
-  where
-    acc 0 as [] = Just $ reverse as
-    acc 0 _  _  = Nothing
-    acc t as [] = Just $ reverse as ++ replicate t z
-    acc t as (b:bs) = acc (t-1) (b:as) bs
+padToByAfter :: Int -> a -> [a] -> [a]
+padToByAfter k z xs = take k (xs ++ repeat z)
 
 
 {-|
@@ -134,3 +129,12 @@ maxMonoSubseqsBy p = unfoldr maxMonoSubseq
     accum (a:as) bs (z:zs) = if p a z
       then accum (z:a:as) bs zs
       else accum (a:as) (z:bs) zs
+
+
+unfoldrMaybe :: (b -> Maybe (Maybe (a,b))) -> b -> Maybe [a]
+unfoldrMaybe f x = case f x of
+  Nothing -> Nothing
+  Just Nothing -> Just []
+  Just (Just (a,b)) -> do
+    as <- unfoldrMaybe f b
+    Just (a:as)

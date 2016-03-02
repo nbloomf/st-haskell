@@ -5,14 +5,15 @@ module Main where
 import SoftwareTools.Lib
   ((>>>), unfoldr, intercalate,
    isPrefixOf, isSuffixOf, isUpper)
+import SoftwareTools.Lib.IO (charFilter, putNewLine)
 import SoftwareTools.Lib.List (count, break2)
 import SoftwareTools.Lib.Text (getWords)
 
 
 main :: IO ()
-main = getContents >>=
-  (getSentences >>> count >>> show >>> putStrLn)
-
+main = do
+  charFilter (show . count . getSentences)
+  putNewLine
 
 
 {-|

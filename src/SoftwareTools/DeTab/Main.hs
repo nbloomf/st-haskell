@@ -1,9 +1,11 @@
 -- sth-detab: convert tabs to spaces
+--   line-oriented
 
 module Main where
 
 import SoftwareTools.Lib
   ((>>>), exitSuccess, exitFailure, getArgs)
+import SoftwareTools.Lib.IO    (lineFilter)
 import SoftwareTools.Lib.Read  (readPosIntList)
 import SoftwareTools.Lib.Text  (getLines)
 import SoftwareTools.Lib.List  (spanAtMostWhile, padToByAfter)
@@ -23,19 +25,10 @@ main = do
                  ["tab widths must be positive integers."
                  ] >> exitFailure
 
-  -- Detab a single line ln with tabstops ts.
-  let detab ln = case convertTabStops ts ln of
-                   Nothing -> reportErrorMsgs
-                                [ "LINE: " ++ ln
-                                , "TABS: " ++ show ts
-                                ] >> exitFailure
-                   Just cs -> putStrLn cs
-
   -- Do it!
-  getContents
-    >>= (getLines >>> map detab >>> sequence_)
-
+  lineFilter (convertTabStops ts)
   exitSuccess
+
 
 
 {-|
@@ -48,29 +41,27 @@ main = do
   given the function returns Nothing. This function is
   a partial inverse of 'insertTabStops'.
 -}
-convertTabStops :: [Int] -> String -> Maybe String
-convertTabStops [] _  = Nothing
+convertTabStops :: [Int] -> String -> String
+convertTabStops [] xs = xs
 convertTabStops ks xs = accum [] ks xs
   where
-    accum zs _   "" = Just $ concat $ reverse zs
-    accum zs [t] ys = do
-      (as,bs) <- splitTabStop t ys
+    accum zs _   "" = concat $ reverse zs
+    accum zs [t] ys =
+      let (as,bs) = splitTabStop t ys in
       accum (as:zs) [t] bs
-    accum zs (t:ts) ys = do
-      (as,bs) <- splitTabStop t ys
+    accum zs (t:ts) ys =
+      let (as,bs) = splitTabStop t ys in
       accum (as:zs) ts bs
 
-    splitTabStop :: Int -> String -> Maybe (String, String)
+    splitTabStop :: Int -> String -> (String, String)
     splitTabStop k xs
-      | k <= 0    = Nothing
-      | otherwise = do
-          (as,bs) <- spanAtMostWhile k (/= '\t') xs
-          if bs == ""
-            then do
-              let cs = reverse $ dropWhile (==' ') $ reverse as
-              return (cs,"")
-            else do
-              cs <- padToByAfter k ' ' as
+      | k <= 0    = (xs,"")
+      | otherwise = 
+          case spanAtMostWhile k (/= '\t') xs of
+            (as,"") -> (stripTrailingSpaces as, "")
+            (as,bs) -> let cs = padToByAfter k ' ' as in
               case bs of
-                '\t':ds -> return (cs,ds)
-                ds      -> return (cs,ds)
+                '\t':ds -> (cs,ds)
+                ds      -> (cs,ds)
+      where
+        stripTrailingSpaces = reverse . dropWhile (==' ') . reverse

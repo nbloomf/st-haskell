@@ -1,9 +1,12 @@
 -- sth-copy: copy characters from stdin to stdout
+--   character-oriented
 
 module Main where
 
-import SoftwareTools.Lib (getChar, putChar)
-import SoftwareTools.Lib.Error (catchEOF)
+import SoftwareTools.Lib (exitSuccess)
+import SoftwareTools.Lib.IO (charFilter)
 
 main :: IO ()
-main = catchEOF getChar >>= putChar >> main
+main = do
+  charFilter id
+  exitSuccess

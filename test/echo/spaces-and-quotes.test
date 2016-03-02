@@ -1,4 +1,5 @@
 sth-echo "a   b"   c
 >>>
-a   b c
+a   b
+c
 >>>= 0

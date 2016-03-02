@@ -1,13 +1,16 @@
 -- sth-charcombine: replace combining unicode chars with precomposed chars
+--   character-oriented
 
 module Main where
 
-import SoftwareTools.Lib ((>>>))
+import SoftwareTools.Lib (exitSuccess)
+import SoftwareTools.Lib.IO   (charFilter)
 import SoftwareTools.Lib.Text (getGlyphs)
 
 main :: IO ()
-main = getContents >>=
-  (getGlyphs >>> concatMap toPrecomposed >>> putStr)
+main = do
+  charFilter (concatMap toPrecomposed . getGlyphs)
+  exitSuccess
 
 
 

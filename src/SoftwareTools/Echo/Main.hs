@@ -1,11 +1,9 @@
--- sth-echo: write arguments to stdout
+-- sth-echo: write arguments to stdout, one per line
 
 module Main where
 
-import SoftwareTools.Lib
-  ((>>>), getArgs, unwords, exitSuccess)
+import SoftwareTools.Lib (getArgs, exitSuccess)
+import SoftwareTools.Lib.IO (putStrLns)
 
 main :: IO ()
-main = getArgs
-  >>= (unwords >>> putStrLn)
-  >>  exitSuccess
+main = getArgs >>= putStrLns >> exitSuccess

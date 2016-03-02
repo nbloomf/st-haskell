@@ -1,16 +1,17 @@
 -- sth-charfullwidth: replace characters with fullwidth equivalents
+--   character-oriented
 
 module Main where
 
-import SoftwareTools.Lib ((>>>), getChar, putChar)
+import SoftwareTools.Lib (exitSuccess)
+import SoftwareTools.Lib.IO   (charFilter)
 import SoftwareTools.Lib.List (applyListMap)
-import SoftwareTools.Lib.Error (catchEOF)
 
 
 main :: IO ()
-main = catchEOF getChar
-  >>= (toFullwidth >>> putChar)
-  >>  main
+main = do
+  charFilter (map toFullwidth)
+  exitSuccess
 
 
 

@@ -1,26 +1,29 @@
 -- sth-overstrike: interpret backspaces using line printer control codes
+--   line-oriented
 
 module Main where
 
 import SoftwareTools.Lib
-  ((>>>), exitSuccess, sortBy)
+  ((>>>), exitSuccess, sortBy, intercalate)
+import SoftwareTools.Lib.IO
+  (lineFilter)
 import SoftwareTools.Lib.List
   (maxMonoSubseqsBy, fromSparseList)
-import SoftwareTools.Lib.Text (getLines)
+import SoftwareTools.Lib.Text
+  (getLines)
 
 
 main :: IO ()
 main = do
-  let overstrike = overstrikeLines
-                     >>> zipWith (:) (' ' : (repeat '+'))
-                     >>> map putStrLn
-                     >>> sequence_
-
-  getContents
-    >>= (getLines >>> map overstrike >>> sequence_)
-
+  lineFilter overstrike
   exitSuccess
 
+
+
+overstrike :: String -> String
+overstrike = overstrikeLines
+  >>> zipWith (:) (' ' : (repeat '+'))
+  >>> intercalate "\n"
 
 
 {-|

@@ -1,9 +1,11 @@
 module SoftwareTools.Lib.Text (
-  getLines, getWords, getGlyphs, backslashUnEscape
+  getLines, getWords, getGlyphs, backslashUnEscape, rleEncode, rleDecode
 ) where
 
 import Data.List (unfoldr)
 import Data.Char (isSpace, isMark, readLitChar)
+import SoftwareTools.Lib.List (count, unfoldrMaybe)
+import SoftwareTools.Lib.Read (readBase86Nat, showBase86Nat)
 
 
 {-|
@@ -172,3 +174,84 @@ backslashUnEscape = concat . unfoldr firstChar
             []        -> Just ('\\':digs, ds)
             ((x,_):_) -> Just ([x],ds)
           False -> Just ('\\':digs, ds)
+
+
+
+data RLE a
+  = Chunk  Int [a]
+  | Repeat Int a
+  deriving Show
+
+
+rleEncode :: Int -> String -> String
+rleEncode k = showRLE . runLengthEncode k
+
+rleDecode :: String -> Maybe String
+rleDecode = fmap runLengthDecode . readRLE
+
+
+runLengthDecode :: (Eq a) => [RLE a] -> [a]
+runLengthDecode = concatMap decodeRLE
+  where
+    decodeRLE :: (Eq a) => RLE a -> [a]
+    decodeRLE (Chunk  _ xs) = xs
+    decodeRLE (Repeat k x)  = replicate k x
+
+
+runLengthEncode :: (Eq a) => Int -> [a] -> [RLE a]
+runLengthEncode t = unfoldr (getFirst t) . getRuns
+  where
+    getFirst :: (Eq a) => Int -> [(a, Int)] -> Maybe (RLE a, [(a, Int)])
+    getFirst _ [] = Nothing
+    getFirst t ((x,k):xs) = case compare t k of
+      GT -> Just (Chunk h ys, bs)
+              where
+                (as,bs) = span (\(_,k) -> t > k) xs
+                ys = fromRuns ((x,k):as)
+                h  = sum $ map snd ((x,k):as)
+      otherwise -> Just (Repeat k x, xs)
+
+    getRuns :: (Eq a) => [a] -> [(a, Int)]
+    getRuns = unfoldr firstRun
+      where
+        firstRun :: (Eq a) => [a] -> Maybe ((a, Int), [a])
+        firstRun []     = Nothing
+        firstRun (x:xs) = let (as,bs) = span (== x) xs in
+          Just ((x, 1 + count as), bs)
+
+    fromRuns :: [(a, Int)] -> [a]
+    fromRuns = concatMap (\(x,k) -> replicate k x)
+
+showRLE :: [RLE Char] -> String
+showRLE = concatMap write
+  where
+    write :: RLE Char -> String
+    write (Repeat k x) = concat
+      ["!", [x], showBase86Nat k, " "]
+    write (Chunk k xs) = concat
+      ["?", showBase86Nat k, " ", xs]
+      
+
+readRLE :: String -> Maybe [RLE Char]
+readRLE = unfoldrMaybe readFirstRLE
+  where
+    readFirstRLE :: String -> Maybe (Maybe (RLE Char, String))
+    readFirstRLE xs = case xs of
+      "" -> Just Nothing
+      ('!':x:ys) -> do
+        let (as,bs) = span (/= ' ') ys
+        k <- readBase86Nat as
+        case bs of
+          ""     -> Just (Just (Repeat k x, ""))
+          (_:cs) -> Just (Just (Repeat k x, cs))
+      ('?':ys) -> do
+        let (as,bs) = span (/= ' ') ys
+        k <- readBase86Nat as
+        case bs of
+          ""     -> Nothing
+          (_:cs) -> do
+            let (ds,es) = splitAt k cs
+            Just (Just (Chunk k ds, es))
+      otherwise -> Nothing
+
+
