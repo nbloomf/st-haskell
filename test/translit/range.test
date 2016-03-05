@@ -1,0 +1,4 @@
+sth-echo "hello world" | sth-translit "a-z" "w"
+>>>
+wwwww wwwww
+>>>= 0

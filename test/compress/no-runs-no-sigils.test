@@ -1,0 +1,4 @@
+sth-echo "hello world" | sth-compress
+>>>
+hello world
+>>>= 0

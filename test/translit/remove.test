@@ -1,0 +1,4 @@
+sth-echo "hello world" | sth-translit "l"
+>>>
+heo word
+>>>= 0

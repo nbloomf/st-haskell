@@ -8,76 +8,101 @@ Synopsis:       Haskell implementation of the utilities
 Build-Type:     Simple
 
 Executable sth-copy
-  main-is:        SoftwareTools/Copy/Main.hs
+  main-is:        STH/Copy/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-charcount
-  main-is:        SoftwareTools/CharCount/Main.hs
+  main-is:        STH/CharCount/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-linecount
-  main-is:        SoftwareTools/LineCount/Main.hs
+  main-is:        STH/LineCount/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-glyphcount
-  main-is:        SoftwareTools/GlyphCount/Main.hs
+  main-is:        STH/GlyphCount/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-wordcount
-  main-is:        SoftwareTools/WordCount/Main.hs
+  main-is:        STH/WordCount/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-sentcount
-  main-is:        SoftwareTools/SentCount/Main.hs
+  main-is:        STH/SentCount/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-detab
-  main-is:        SoftwareTools/DeTab/Main.hs
+  main-is:        STH/DeTab/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-charcombine
-  main-is:        SoftwareTools/CharCombine/Main.hs
+  main-is:        STH/CharCombine/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-charfullwidth
-  main-is:        SoftwareTools/CharFullwidth/Main.hs
+  main-is:        STH/CharFullwidth/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-entab
-  main-is:        SoftwareTools/EnTab/Main.hs
+  main-is:        STH/EnTab/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-echo
-  main-is:        SoftwareTools/Echo/Main.hs
+  main-is:        STH/Echo/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-overstrike
-  main-is:        SoftwareTools/Overstrike/Main.hs
+  main-is:        STH/Overstrike/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-unescape
-  main-is:        SoftwareTools/UnEscape/Main.hs
+  main-is:        STH/UnEscape/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-charecho
-  main-is:        SoftwareTools/CharEcho/Main.hs
+  main-is:        STH/CharEcho/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
 Executable sth-compress
-  main-is:        SoftwareTools/Compress/Main.hs
+  main-is:        STH/Compress/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-expand
+  main-is:        STH/Expand/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-crypt
+  main-is:        STH/Crypt/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-translit
+  main-is:        STH/Translit/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-charreplace
+  main-is:        STH/CharReplace/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-escape
+  main-is:        STH/Escape/Main.hs
   hs-source-dirs: src/
   build-depends:  base

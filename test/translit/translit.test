@@ -1,0 +1,4 @@
+sth-echo "abc" | sth-translit "abc" "xyz"
+>>>
+xyz
+>>>= 0

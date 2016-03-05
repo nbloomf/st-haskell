@@ -1,0 +1,4 @@
+sth-charecho "hello\nworld" | sth-unescape | sth-escape | sth-charreplace d "d\n"
+>>>
+hello\nworld
+>>>= 0

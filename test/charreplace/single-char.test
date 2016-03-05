@@ -1,0 +1,4 @@
+sth-echo "hello world" | sth-charreplace "o" "wut"
+>>>
+hellwut wwutrld
+>>>= 0

@@ -1,0 +1,4 @@
+sth-echo "hello world" | sth-crypt "foo" | sth-crypt "foo"
+>>>
+hello world
+>>>= 0

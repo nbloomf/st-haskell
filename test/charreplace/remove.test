@@ -1,0 +1,4 @@
+sth-echo "hello world" | sth-charreplace "h"
+>>>
+ello world
+>>>= 0

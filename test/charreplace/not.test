@@ -1,0 +1,4 @@
+sth-echo "hello world" | sth-charreplace --not "o \n" "x"
+>>>
+xxxxo xoxxx
+>>>= 0
