@@ -3,26 +3,26 @@
 
 module Main where
 
-import STH.Lib (getArgs, exitSuccess)
-import STH.Lib.IO (charFilter)
-import STH.Lib.Text
-  (toCodePoint, fromCodePoint)
-import STH.Lib.Text.Esc (bsUnEsc)
-import STH.Lib.Bit (intXOR)
+import System.Environment (getArgs)
+import System.Exit (exitSuccess)
+import STH.Lib
+  (charFilter, toCodePoint, fromCodePoint,
+   bsUnEsc, intXOR)
+
 
 main :: IO ()
 main = do
-  keys <- getArgs
-  charFilter (cryptKeys (map bsUnEsc keys))
+  keys <- fmap (map bsUnEsc) getArgs
+  charFilter (cryptWithKeys keys)
   exitSuccess
 
 
-cryptKeys :: [String] -> String -> String
-cryptKeys []     str = str
-cryptKeys (k:ks) str = cryptKeys ks (crypt k str)
+cryptWithKeys :: [String] -> String -> String
+cryptWithKeys []     str = str
+cryptWithKeys (k:ks) str = cryptWithKeys ks (crypt k str)
 
 crypt :: String -> String -> String
-crypt ""  str  = str
+crypt ""  str = str
 crypt key str = zipWith xorChar str (concat $ repeat key)
   where
     xorChar :: Char -> Char -> Char

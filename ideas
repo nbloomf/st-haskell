@@ -2,6 +2,6 @@ getlines: extract lines by index, take range args, 10pm2 (plus or minus)
 charcollapse: collapse adjacent instances of characters. take range args.
   also take an optional int arg to specify a truncation size (default is 1)
   e.g. charcollapse "a" 2 replaces runs of 3 or more as with 2, but leaves 1 alone.
-promptlines: line filter that asks the user if each line on stdin should be sent to stdout
+promptlines: asks the user if each line in a file should be sent to stdout
   take prompt question as arg
-numberlines: number lines on stdin
+numberlines: number lines on stdin (options: hex, starting from, separating character (def. tab)) (line -> delimited line)

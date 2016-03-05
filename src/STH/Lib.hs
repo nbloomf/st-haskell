@@ -10,7 +10,9 @@ module STH.Lib (
   module STH.Lib.Read,
   module STH.Lib.Text,
   module STH.Lib.Text.RLE,
-  module STH.Lib.Text.Esc
+  module STH.Lib.Text.Esc,
+  module STH.Lib.Text.Compose,
+  module STH.Lib.Text.Fullwidth
 ) where
 
 import System.IO (getChar, putChar)
@@ -30,3 +32,5 @@ import STH.Lib.Read
 import STH.Lib.Text
 import STH.Lib.Text.RLE
 import STH.Lib.Text.Esc
+import STH.Lib.Text.Compose
+import STH.Lib.Text.Fullwidth

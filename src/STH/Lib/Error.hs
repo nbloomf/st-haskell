@@ -1,5 +1,5 @@
 module STH.Lib.Error (
-  putStrLnErr, reportErrorMsgs, catchEOF
+  putStrLnErr, reportErrorMsgs, catchEOF, putOutOfBand
 ) where
 
 import System.IO (hPutStrLn, stderr)
@@ -11,6 +11,10 @@ import System.Exit (exitSuccess, exitFailure)
 putStrLnErr :: String -> IO ()
 putStrLnErr = hPutStrLn stderr
 
+
+putOutOfBand :: [String] -> IO ()
+putOutOfBand xs = do
+  sequence_ $ map putStrLnErr xs
 
 reportErrorMsgs :: [String] -> IO ()
 reportErrorMsgs errs = do

@@ -3,9 +3,8 @@
 
 module Main where
 
-import STH.Lib (exitSuccess)
-import STH.Lib.IO (charFilter)
-import STH.Lib.Text.Esc (bsEsc)
+import System.Exit (exitSuccess)
+import STH.Lib (charFilter, bsEsc)
 
 
 main :: IO ()

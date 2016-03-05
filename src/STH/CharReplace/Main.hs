@@ -3,12 +3,10 @@
 
 module Main where
 
+import System.Environment (getArgs)
+import System.Exit (exitSuccess, exitFailure)
 import STH.Lib
-  (getArgs, exitSuccess, exitFailure)
-import STH.Lib.IO (charFilter)
-import STH.Lib.Text.Esc (bsUnEsc)
-import STH.Lib.Read (readCharRange)
-import STH.Lib.Error (reportErrorMsgs)
+  (charFilter, bsUnEsc, readCharRange, reportErrorMsgs)
 
 main :: IO ()
 main = do
@@ -50,7 +48,9 @@ main = do
 
 argError :: IO a
 argError = reportErrorMsgs
-  [ "Args should be a list of chars and a replacement string."
-  , "either 'from to' or 'remove'."
-  , "Optional argument: --not to invert selection."
+  [ "usage:"
+  , "  charreplace [SOURCE] [TARGET] -- replace each char in SOURCE with TARGET string"
+  , "  charreplace [REMOVE]          -- remove each char in REMOVE string"
+  , "option:"
+  , "  --not  : invert selection (e.g. replace all *except* SOURCE)"
   ] >> exitFailure
