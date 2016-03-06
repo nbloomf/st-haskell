@@ -1,4 +1,4 @@
-sth-charcount
+sth-count --char
 <<<
 don't forget to count newlines!
 >>>

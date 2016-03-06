@@ -1,0 +1,4 @@
+sth-echo --char "hello" | sth-count --char
+>>>
+5
+>>>= 0

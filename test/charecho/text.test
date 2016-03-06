@@ -1,4 +1,0 @@
-sth-charecho "hello\n" | sth-unescape
->>>
-hello
->>>= 0

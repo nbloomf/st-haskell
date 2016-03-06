@@ -1,5 +1,4 @@
 -- sth-copy: copy characters from stdin to stdout
---   character-oriented
 
 module Main where
 

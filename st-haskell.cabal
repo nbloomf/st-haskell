@@ -12,13 +12,8 @@ Executable sth-copy
   hs-source-dirs: src/
   build-depends:  base
 
-Executable sth-charcount
-  main-is:        STH/CharCount/Main.hs
-  hs-source-dirs: src/
-  build-depends:  base
-
-Executable sth-linecount
-  main-is:        STH/LineCount/Main.hs
+Executable sth-count
+  main-is:        STH/Count/Main.hs
   hs-source-dirs: src/
   build-depends:  base
 
@@ -72,11 +67,6 @@ Executable sth-unescape
   hs-source-dirs: src/
   build-depends:  base
 
-Executable sth-charecho
-  main-is:        STH/CharEcho/Main.hs
-  hs-source-dirs: src/
-  build-depends:  base
-
 Executable sth-compress
   main-is:        STH/Compress/Main.hs
   hs-source-dirs: src/
@@ -104,5 +94,10 @@ Executable sth-charreplace
 
 Executable sth-escape
   main-is:        STH/Escape/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-compare
+  main-is:        STH/Compare/Main.hs
   hs-source-dirs: src/
   build-depends:  base
