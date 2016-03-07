@@ -8,7 +8,7 @@ numberlines: number lines on stdin
   (options: hex, starting from, separating character (def. tab)) (line -> delimited line)
 escape: add (mutually exclusive) options --not and --only that take character ranges.
   Extend character ranges to allow for named sets of characters, e.g. [:alnum:]
-
+cogrep: given a regular expression, generate random data which matches it
 
 types of tools:
   sources, filters, sinks
