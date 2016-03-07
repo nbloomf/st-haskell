@@ -1,5 +1,5 @@
 module STH.Lib.Text (
-  getLines, getWords, getGlyphs, toCodePoint, fromCodePoint
+  getLines, fromLines, getWords, getGlyphs, toCodePoint, fromCodePoint
 ) where
 
 import Data.List (unfoldr)
@@ -21,6 +21,9 @@ getLines = unfoldr firstLine
       ("","")   -> Nothing
       (as,"")   -> Just (as,"")
       (as,b:bs) -> Just (as,bs)
+
+fromLines :: [String] -> String
+fromLines xs = concat $ zipWith (++) xs (repeat "\n")
 
 
 {-|

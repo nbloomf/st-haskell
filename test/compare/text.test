@@ -1,5 +1,6 @@
-sth-compare --to "hello world\n"
+sth-compare --to hello world
 <<<
-hello world
+hello
+world
 >>>
 >>>= 0

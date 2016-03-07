@@ -1,7 +1,8 @@
 module STH.Lib.List (
   count, applyListMap, break2, fromSparseList,
   spanAtMostWhile, padToByAfter, maxMonoSubseqsBy,
-  unfoldrMaybe, getRuns, fromRuns, padLast
+  unfoldrMaybe, getRuns, fromRuns, padLast, padToLongerWith,
+  diffList, diffLists, peelPrefix
 ) where
 
 import Data.Foldable (foldl')
@@ -106,6 +107,15 @@ padToByAfter :: Int -> a -> [a] -> [a]
 padToByAfter k z xs = take k (xs ++ repeat z)
 
 
+padToLongerWith :: a -> [a] -> [a] -> ([a], [a])
+padToLongerWith _ [] [] = ([],[])
+padToLongerWith z [] ys = unzip $ zip (repeat z) ys
+padToLongerWith z xs [] = unzip $ zip xs (repeat z)
+padToLongerWith z (x:xs) (y:ys) =
+  let (as,bs) = padToLongerWith z xs ys
+  in (x:as, y:bs)
+
+
 {-|
   A subsequence of a list is a selection of some
   elements in increasing index order. A subsequence
@@ -155,3 +165,31 @@ padLast :: [a] -> [a]
 padLast []     = []
 padLast [x]    = repeat x
 padLast (x:xs) = x : padLast xs
+
+diffList :: (Eq a) => [a] -> [a] -> (Maybe a, Maybe a, Integer)
+diffList = comp 1
+  where
+    comp _ []     []     = (Nothing, Nothing, 0)
+    comp k []     (y:_)  = (Nothing, Just y, k)
+    comp k (x:_)  []     = (Just x, Nothing, k)
+    comp k (x:xs) (y:ys) = if x == y
+      then comp (k+1) xs ys
+      else (Just x, Just y, k)
+
+diffLists :: (Eq a) => [[a]] -> [[a]]
+  -> (Maybe [a], Maybe [a], Integer, Integer)
+diffLists = comp 1
+  where
+    comp _ []       []       = (Nothing, Nothing, 0, 0)
+    comp m []       (ys:yss) = (Nothing, Just ys, m, 1)
+    comp m (xs:xss) []       = (Just xs, Nothing, m, 1)
+    comp m (xs:xss) (ys:yss) = case diffList xs ys of
+      (Nothing, Nothing, _) -> comp (m+1) xss yss
+      (_,_,n) -> (Just xs, Just ys, m, n)
+
+peelPrefix :: (Eq a) => [a] -> [a] -> Maybe [a]
+peelPrefix [] ys = Just ys
+peelPrefix _  [] = Nothing
+peelPrefix (x:xs) (y:ys) = if x == y
+  then peelPrefix xs ys
+  else Nothing

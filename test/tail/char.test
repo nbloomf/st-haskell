@@ -1,0 +1,4 @@
+sth-echo "hello world" | sth-tail --char 6
+>>>
+world
+>>>= 0

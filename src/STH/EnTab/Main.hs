@@ -1,15 +1,13 @@
 -- sth-entab: replace spaces on stdin with tabs
---   line-oriented
 
 module Main where
 
+import System.Exit (exitSuccess, exitFailure)
+import System.Environment (getArgs)
+import Control.Arrow ((>>>))
 import STH.Lib
-  ((>>>), exitSuccess, exitFailure, getArgs)
-import STH.Lib.IO    (lineFilter)
-import STH.Lib.Read  (readPosIntList)
-import STH.Lib.Text  (getLines)
-import STH.Lib.List  (spanAtMostWhile, padToByAfter)
-import STH.Lib.Error (reportErrorMsgs)
+  (lineFilter, readPosIntList, getLines,
+   spanAtMostWhile, padToByAfter, reportErrorMsgs)
 
 
 main :: IO ()

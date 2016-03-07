@@ -4,122 +4,78 @@ module Main where
 
 import System.Exit (exitSuccess, exitFailure)
 import System.Environment (getArgs)
-import STH.Lib (reportErrorMsgs, getLines, bsUnEsc)
+import Data.Maybe (maybeToList)
+import STH.Lib
+  (reportErrorMsgs, getLines, bsUnEsc,
+   padToLongerWith, diffList, diffLists, fromLines)
+
+
+data Mode = Chars | Lines
+
 
 main :: IO ()
 main = do
   args <- getArgs
 
-  params <- case args of
-    ["--char",xs]    -> return (Chars,xs,"")
-    ["--char",xs,ys] -> return (Chars,xs,ys)
-    ["--to",xs]      -> return (ToStr,xs,"")
-    [ys,"--to",xs]   -> return (ToStr,xs,ys)
-    [xs]             -> return (Lines,xs,"")
-    [xs,ys]          -> return (Lines,xs,ys)
-    otherwise        -> argError >> exitFailure
+  -- interpret arguments
+  (mode,(name1,stream1),(name2,stream2)) <- do
+    let
+      (flag,rest) = case args of
+        ("--char":xss) -> (Chars,xss)
+        xss            -> (Lines,xss)
 
+    case rest of
+      ("--to":ys) -> do
+        let
+          as = bsUnEsc $ case flag of
+            Chars -> concat ys
+            Lines -> fromLines ys
+        bs <- getContents
+        return (flag,("args",as),("stdin",bs))
+      [xs] -> do
+        as <- readFile xs
+        bs <- getContents
+        return (flag,(xs,as),("stdin",bs))
+      [xs,ys] -> do
+        as <- readFile xs
+        bs <- readFile ys
+        return (flag,(xs,as),(ys,bs))
+      otherwise -> argError >> exitFailure
+
+
+  -- Some helpers
   let
-    compChar (na,as) (nb,bs) = case diffList as bs of
+    (label1,label2) = padToLongerWith ' ' name1 name2
+
+    report label [] = putStrLn $ label ++ ": (empty)"
+    report label xs = putStrLn $ label ++ ": " ++ xs
+
+
+  case mode of
+    Chars -> case diffList stream1 stream2 of
       (Nothing, Nothing, _) -> return ()
-      (Just a, Nothing, t) -> do
+      (x, y, t) -> do
         putStrLn $ "first differ at column " ++ show t
-        putStrLn $ ma ++ ": " ++ [a]
-        putStrLn $ mb ++ ": (empty)"
-      (Nothing, Just b, t) -> do
-        putStrLn $ "first differ at column " ++ show t
-        putStrLn $ ma ++ ": (empty)"
-        putStrLn $ mb ++ ": " ++ [b]
-      (Just a, Just b, t) -> do
-        putStrLn $ "first differ at column " ++ show t
-        putStrLn $ ma ++ ": " ++ [a]
-        putStrLn $ mb ++ ": " ++ [b]
-      where
-        (ma,mb) = padToLonger na nb
+        report label1 (maybeToList x)
+        report label2 (maybeToList y)
 
-    compLine (na,as) (nb,bs) = case diffLists as bs of
+    Lines -> case diffLists (getLines stream1) (getLines stream2) of
       (Nothing, Nothing, _, _) -> return ()
-      (Just a, Nothing, m, n) -> do
+      (x, y, m, n) -> do
         putStrLn $ "first differ at line " ++ show m ++ ", column " ++ show n
-        putStrLn $ ma ++ ": " ++ a
-        putStrLn $ mb ++ ": (empty)"
-      (Nothing, Just b, m, n) -> do
-        putStrLn $ "first differ at line " ++ show m ++ ", column " ++ show n
-        putStrLn $ ma ++ ": (empty)"
-        putStrLn $ mb ++ ": " ++ b
-      (Just a, Just b, m, n) -> do
-        putStrLn $ "first differ at line " ++ show m ++ ", column " ++ show n
-        putStrLn $ ma ++ ": " ++ a
-        putStrLn $ mb ++ ": " ++ b
-      where
-        (ma,mb) = padToLonger na nb
-
-  case params of
-    (Chars,xs,"") -> do
-      as <- readFile xs
-      bs <- getContents
-      compChar (xs,as) ("stdin", bs)
-    (Chars,xs,ys) -> do
-      as <- readFile xs
-      bs <- readFile ys
-      compChar (xs,as) (ys,bs)
-    (ToStr,xs,"") -> do
-      bs <- getContents
-      compChar ("arg", bsUnEsc xs) ("stdin", bs)
-    (ToStr,xs,ys) -> do
-      bs <- readFile ys
-      compChar ("arg", bsUnEsc xs) (ys,bs)
-    (Lines,xs,"") -> do
-      as <- fmap getLines $ readFile xs
-      bs <- fmap getLines $ getContents
-      compLine (xs,as) ("stdin",bs)
-    (Lines,xs,ys) -> do
-      as <- fmap getLines $ readFile xs
-      bs <- fmap getLines $ readFile ys
-      compLine (xs,as) (ys,bs)
+        report label1 (concat $ maybeToList x)
+        report label2 (concat $ maybeToList y) 
 
   exitSuccess
-
-
-data Flag = Chars | Lines | ToStr
 
 
 argError :: IO ()
 argError = do
   reportErrorMsgs
     [ "usage:"
-    , "  compare [FILE1] [FILE2] -- find first discrepancy between FILE1 and FILE2"
-    , "  compare [FILE]          -- find first discrepancy between FILE and stdin"
+    , "  compare FILE1 FILE2  -- find first discrepancy between FILE1 and FILE2"
+    , "  compare FILE         -- find first discrepancy between FILE and stdin"
+    , "  compare --to STR ... -- find first discrepancy between STRs and stdin"
     , "options:"
-    , "  --char   : compare as (unlined) character strings"
-    , "  --to STR : compare file or stdin to string argument"
+    , "  --char : compare as (unlined) character streams"
     ]
-
-diffList :: (Eq a) => [a] -> [a] -> (Maybe a, Maybe a, Integer)
-diffList = comp 1
-  where
-    comp _ []     []     = (Nothing, Nothing, 0)
-    comp k []     (y:_)  = (Nothing, Just y, k)
-    comp k (x:_)  []     = (Just x, Nothing, k)
-    comp k (x:xs) (y:ys) = if x == y
-      then comp (k+1) xs ys
-      else (Just x, Just y, k)
-
-diffLists :: (Eq a) => [[a]] -> [[a]]
-  -> (Maybe [a], Maybe [a], Integer, Integer)
-diffLists = comp 1
-  where
-    comp _ []       []       = (Nothing, Nothing, 0, 0)
-    comp m []       (ys:yss) = (Nothing, Just ys, m, 1)
-    comp m (xs:xss) []       = (Just xs, Nothing, m, 1)
-    comp m (xs:xss) (ys:yss) = case diffList xs ys of
-      (Nothing, Nothing, _) -> comp (m+1) xss yss
-      (_,_,n) -> (Just xs, Just ys, m, n)
-
-
-padToLonger :: String -> String -> (String, String)
-padToLonger [] ys = unzip $ zip (repeat ' ') ys
-padToLonger xs [] = unzip $ zip xs (repeat ' ')
-padToLonger (x:xs) (y:ys) =
-  let (as,bs) = padToLonger xs ys
-  in (x:as, y:bs)

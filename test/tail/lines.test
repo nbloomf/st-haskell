@@ -1,0 +1,6 @@
+sth-echo a b c d e f g | sth-tail 3
+>>>
+e
+f
+g
+>>>= 0

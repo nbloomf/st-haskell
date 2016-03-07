@@ -97,6 +97,11 @@ Executable sth-escape
   hs-source-dirs: src/
   build-depends:  base
 
+Executable sth-tail
+  main-is:        STH/Tail/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
 Executable sth-compare
   main-is:        STH/Compare/Main.hs
   hs-source-dirs: src/
