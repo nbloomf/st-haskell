@@ -42,83 +42,25 @@ First, here is the main program.
 
 
 ```haskell
--- sth-detab: convert tabs to spaces
---   line-oriented
-
-module Main where
-
-import SoftwareTools.Lib
-  ((>>>), exitSuccess, exitFailure, getArgs)
-import SoftwareTools.Lib.IO    (lineFilter)
-import SoftwareTools.Lib.Read  (readPosIntList)
-import SoftwareTools.Lib.Text  (getLines)
-import SoftwareTools.Lib.List  (spanAtMostWhile, padToByAfter)
-import SoftwareTools.Lib.Error (reportErrorMsgs)
-
-
-main :: IO ()
-main = do
-  args <- getArgs
-
-  -- Read positive integer tabstop arguments.
-  -- Default is [8].
-  ts <- case readPosIntList args of
-    Just [] -> return [8]
-    Just ks -> return ks
-    Nothing -> reportErrorMsgs
-                 ["tab widths must be positive integers."
-                 ] >> exitFailure
-
-  -- Do it!
-  lineFilter (convertTabStops ts)
-  exitSuccess
+&splice src/STH/DeTab/Main.hs
 ```
 
 
 In order, we (1) get the user-supplied tab stop widths as strings (``getArgs``), then (2) parse these as positive integers (``readPosIntList``), which may fail. We have a custom library function (``convertTabStops``) that does the real work, and here (3) define a throwaway function ``detab`` that wraps ``convertTabStops`` and handles its error condition (more on that later). Finally, we (4) read from stdin lazily, split the input into lines, and apply ``detab`` to each one.
 
-This program has an error condition: the user may provide bad command line arguments. In this case we gently remind the user how to use this program. We follow the standard unix practice of writing errors to stderr rather than stdout. Since we'll be reporting errors more in the future, we'll write two library functions two write messages to stderr.
+This program has an error condition: the user may provide bad command line arguments. In this case we gently remind the user how to use this program. We follow the standard unix practice of writing errors to stderr rather than stdout. Since we'll be reporting errors more in the future, we write a library function, ``reportErrorMsgs``, to handle writing to ``stderr``.
+
+The real work happens in two functions, ``readPosIntList`` and ``convertTabStops``. First, ``readPosIntList`` parses a list of strings to a list of positive integers. This problem is general enough to go in the library.
 
 
 ```haskell
-putStrLnErr :: String -> IO ()
-putStrLnErr = hPutStrLn stderr
+&splice src/STH/Lib/Read.hs between --readPosIntList.S and --readPosIntList.E
 
 
-reportErrorMsgs :: [String] -> IO ()
-reportErrorMsgs errs = do
-  name <- getProgName
-  sequence_ $ map putStrLnErr $ ((name ++ " error"):errs)
-```
+&splice src/STH/Lib/Read.hs between --readDecimalNat.S and --readDecimalNat.E
 
 
-Okay, that is straightforward enough. But the real work happens in two functions, ``readPosIntList`` and ``convertTabStops``. First, reading natural numbers. These functions are general-purpose enough to go in the library.
-
-
-```haskell
-readPosIntList :: [String] -> Maybe [Int]
-readPosIntList =
-  sequence . map (guardMaybe (>0)) . map readDecimalNat
-
-
-readDecimalNat :: String -> Maybe Int
-readDecimalNat xs = do
-  ys <- sequence $ map decToInt $ reverse xs
-  return $ sum $ zipWith (*) ys [10^t | t <- [0..]]
-  where
-    decToInt :: Char -> Maybe Int
-    decToInt x = lookup x
-      [ ('0',0), ('1',1), ('2',2), ('3',3), ('4',4)
-      , ('5',5), ('6',6), ('7',7), ('8',8), ('9',9)
-      ]
-
-
-filterMaybe :: (a -> Bool) -> Maybe a -> Maybe a
-filterMaybe p x = do
-  y <- x
-  case p y of
-    True  -> Just y
-    False -> Nothing
+&splice src/STH/Lib/Maybe.hs between --filterMaybe.S and --filterMaybe.E
 ```
 
 
@@ -128,49 +70,16 @@ Next we show ``convertTabStops``.
 
 
 ```haskell
-convertTabStops :: [Int] -> String -> String
-convertTabStops [] xs = xs
-convertTabStops ks xs = accum [] ks xs
-  where
-    accum zs _   "" = concat $ reverse zs
-    accum zs [t] ys =
-      let (as,bs) = splitTabStop t ys in
-      accum (as:zs) [t] bs
-    accum zs (t:ts) ys =
-      let (as,bs) = splitTabStop t ys in
-      accum (as:zs) ts bs
-
-    splitTabStop :: Int -> String -> (String, String)
-    splitTabStop k xs
-      | k <= 0    = (xs,"")
-      | otherwise = 
-          case spanAtMostWhile k (/= '\t') xs of
-            (as,"") -> (stripTrailingSpaces as, "")
-            (as,bs) -> let cs = padToByAfter k ' ' as in
-              case bs of
-                '\t':ds -> (cs,ds)
-                ds      -> (cs,ds)
-      where
-        stripTrailingSpaces = reverse . dropWhile (==' ') . reverse
+&splice src/STH/Lib/Text/Format/Delimited.hs between --convertTabStops.S and --convertTabStops.E
 
 
-spanAtMostWhile :: Int -> (a -> Bool) -> [a] -> ([a],[a])
-spanAtMostWhile k p xs
-  | k < 0     = ([],xs)
-  | otherwise = acc k [] xs
-  where
-    acc 0 as bs = (reverse as, bs)
-    acc _ as [] = (reverse as, [])
-    acc t as (b:bs) = if p b
-      then acc (t-1) (b:as) bs
-      else (reverse as, b:bs)
+&splice src/STH/Lib/List.hs between --spanAtMostWhile.S and --spanAtMostWhile.E
 
 
-padToByAfter :: Int -> a -> [a] -> [a]
-padToByAfter k z xs = take k (xs ++ repeat z)
+&splice src/STH/Lib/List.hs between --padToByAfter.S and --padToByAfter.E
 ```
 
 
-The helper function ``splitTabStop`` takes a single tab stop width ``k`` and a string ``xs``, and peels of the first ``k`` characters of ``xs`` unless one of them is a ``\t``. It then returns a pair consisting of the peeled off characters and the remainder of the string. (If the ``k`` parameter is negative, we have a problem, so we return ``Nothing`` in this case. **This is why we have to handle the second error condition in the main function.** If Haskell had a convenient positive integer type, this could be dealt with differently.) Then ``convertTabStops`` simply marches down an entire line with a list of tab stop widths, peeling off tab stops as it goes. This is done using an accumulating parameter function, ``accum``. Once the string is empty, ``accum`` reverses the accumulating parameter and returns it (concatenated), otherwise it takes the next tab stop width and repeats.
+The helper function ``splitTabStop`` takes a single tab stop width ``k`` and a string ``xs``, and peels of the first ``k`` characters of ``xs`` unless one of them is a ``\t``. It then returns a pair consisting of the peeled off characters and the remainder of the string. (If the ``k`` parameter is negative or zero, we peel off the empty string. Then ``convertTabStops`` simply marches down an entire line with a list of tab stop widths, peeling off tab stops as it goes. This is done using an accumulating parameter function, ``accum``. Once the string is empty, ``accum`` reverses the accumulating parameter and returns it (concatenated), otherwise it takes the next tab stop width and repeats.
 
 ``spanAtMostWhile`` is a combination of the standard library functions ``span`` and ``take``. It peels off up to ``k`` elements of a list provided they all satisfy predicate ``p`` and returns both the peeled off elements and the remainder of the list. ``padToByAfter`` pads lists to a given length with a given character, throwing an error if the given length is already too long. Both of these are general enough to factor out; they also both use the accumulating parameter style to avoid space leaks.

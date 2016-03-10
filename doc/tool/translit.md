@@ -32,31 +32,7 @@ We already have most of the machinery needed for ``translit``, except for the co
 
 
 ```haskell
-data CharSeq
-  = Single Char
-  | Range  Char Char
-  deriving (Show)
-
-interpArg :: String -> Maybe String
-interpArg = fmap charSeqsToList . readCharSeqs . backslashUnEscape
-
-charSeqsToList :: [CharSeq] -> String
-charSeqsToList = concatMap charSeqToList
-  where
-    charSeqToList (Single x) = [x]
-    charSeqToList (Range x y) = enumFromTo x y
-
-readCharSeqs :: String -> Maybe [CharSeq]
-readCharSeqs = unfoldrMaybe firstCharSeq
-  where
-    firstCharSeq :: String -> Maybe (Maybe (CharSeq, String))
-    firstCharSeq ""      = Just Nothing
-    firstCharSeq [x]     = Just (Just (Single x, ""))
-    firstCharSeq ('-':_) = Nothing
-    firstCharSeq [x,y]   = Just (Just (Single x, [y]))
-    firstCharSeq (x:y:z:xs) = case y of
-      '-' -> Just (Just (Range x z, xs))
-      otherwise -> Just (Just (Single x, y:z:xs))
+&splice src/STH/Lib/Read/CharSeq.hs between --CharSeq.S and --CharSeq.E
 ```
 
 
@@ -64,44 +40,7 @@ Now the main program just has to interpret its arguments and call some library f
 
 
 ```haskell
--- sth-translit: transliterate characters on stdin
---   character-oriented
-
-module Main where
-
-import System.Environment (getArgs)
-import System.Exit (exitSuccess, exitFailure)
-import STH.Lib
-  (charFilter, applyListMap, padLast,
-   readCharRange, reportErrorMsgs)
-
-
-main :: IO ()
-main = do
-  args <- getArgs
-
-  (from,to) <- case map readCharRange args of
-    [Just as]          -> return (as, "")
-    [Just as, Just bs] -> return (as, bs)
-    otherwise          -> argError
-
-  let
-    remove   = filter (not . (`elem` from))
-    translit = map (applyListMap $ zip from (padLast to))
-
-  case to of
-    ""        -> charFilter remove
-    otherwise -> charFilter translit
-
-  exitSuccess
-
-
-argError :: IO a
-argError = reportErrorMsgs
-  [ "usage:"
-  , "  translit [FROM] [TO]  -- replace chars in FROM by those in TO"
-  , "  translit [REMOVE]     -- remove chars in REMOVE"
-  ] >> exitFailure
+&splice src/STH/Translit/Main.hs
 ```
 
 
@@ -121,4 +60,3 @@ Now the pipeline
     cat unicode-test.txt | translit "xyz" "001" | unescape
 
 replaces the ``x``, ``y``, and ``z`` with ``0``, ``0``, and ``1`` and interprets the ``\uXXXX`` as escape codes. This lets us see what several unicode code points look like at one time. With a larger "template" file we could see more characters at a time.
-

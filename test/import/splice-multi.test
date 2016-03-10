@@ -1,0 +1,10 @@
+cat splice-multi-temp.txt | sth-import
+>>>
+hello
+this should print
+this should print
+world
+here is a bunch of text.
+there should be 3 lines visible.
+Are there?
+>>>= 0

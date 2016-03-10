@@ -1,0 +1,4 @@
+sth-echo --char "hello" | sth-copy
+>>>
+hello
+>>>= 0

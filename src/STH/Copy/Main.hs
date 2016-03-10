@@ -3,9 +3,21 @@
 module Main where
 
 import System.Exit (exitSuccess)
-import STH.Lib (charFilter)
+import System.Environment (getArgs)
+import STH.Lib (charFilter, lineFilter)
+
+data Mode = Chars | Lines
 
 main :: IO ()
 main = do
-  charFilter id
+  args <- getArgs
+
+  mode <- case args of
+    ["--char"] -> return Chars
+    otherwise  -> return Lines
+
+  case mode of
+    Chars -> charFilter id
+    Lines -> lineFilter id
+
   exitSuccess

@@ -1,0 +1,6 @@
+cat splice-temp.txt | sth-import
+>>>
+hello
+this should print
+world
+>>>= 0

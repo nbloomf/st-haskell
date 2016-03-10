@@ -2,7 +2,7 @@ module STH.Lib.List (
   count, applyListMap, break2, fromSparseList,
   spanAtMostWhile, padToByAfter, maxMonoSubseqsBy,
   unfoldrMaybe, getRuns, fromRuns, padLast, padToLongerWith,
-  diffList, diffLists, peelPrefix
+  diffList, diffLists, peelPrefix, takeBetween
 ) where
 
 import Data.Foldable (foldl')
@@ -14,9 +14,11 @@ import Data.List (unfoldr)
   of its list argument; it is polymorphic
   in the result type.
 -}
+--count.S
 count :: (Num t) => [a] -> t
 count = foldl' inc 0
   where inc n _ = n+1
+--count.E
 
 
 {-|
@@ -32,10 +34,12 @@ count = foldl' inc 0
   applyListMap [(1,5),(2,7)] 3 === 3
   applyListMap [(3,5),(3,7)] 3 === 5
 -}
+--applyListMap.S
 applyListMap :: (Eq a) => [(a,a)] -> a -> a
 applyListMap zs x = case lookup x zs of
   Nothing -> x
   Just y  -> y
+--applyListMap.E
 
 
 {-|
@@ -44,6 +48,7 @@ applyListMap zs x = case lookup x zs of
   looks ahead one list element when deciding
   whether to split at a given index.
 -}
+--break2.S
 break2 :: (a -> a -> Bool) -> [a] -> ([a],[a])
 break2 p xs = accum [] xs
   where
@@ -52,6 +57,7 @@ break2 p xs = accum [] xs
     accum zs (y1:y2:ys) = if p y1 y2
       then (reverse (y1:zs), y2:ys)
       else accum (y1:zs) (y2:ys)
+--break2.E
 
 
 {-|
@@ -68,6 +74,7 @@ break2 p xs = accum [] xs
   fromSparseList ' ' [('b',5),('a',1)] === "    b"
   fromSparseList ' ' [('b',5),('a',5)] === "    b"
 -}
+--fromSparseList.S
 fromSparseList :: a -> [(a,Int)] -> [a]
 fromSparseList x [] = []
 fromSparseList x ys = accum 1 [] ys
@@ -77,12 +84,14 @@ fromSparseList x ys = accum 1 [] ys
       EQ -> accum (t+1) (z:as) zs
       LT -> accum (t+1) (x:as) ((z,h):zs)
       GT -> accum (t+1) as zs
+--fromSparseList.E
 
 
 {-|
   'spanAtMostWhile' breaks at most k initial
   elements which satisfy predicate p.
 -}
+--spanAtMostWhile.S
 spanAtMostWhile :: Int -> (a -> Bool) -> [a] -> ([a],[a])
 spanAtMostWhile k p xs
   | k < 0     = ([],xs)
@@ -93,6 +102,7 @@ spanAtMostWhile k p xs
     acc t as (b:bs) = if p b
       then acc (t-1) (b:as) bs
       else (reverse as, b:bs)
+--spanAtMostWhile.E
 
 
 {-|
@@ -103,8 +113,10 @@ spanAtMostWhile k p xs
   than k there is an error. (We take "pad" very
   seriously.)
 -}
+--padToByAfter.S
 padToByAfter :: Int -> a -> [a] -> [a]
 padToByAfter k z xs = take k (xs ++ repeat z)
+--padToByAfter.E
 
 
 padToLongerWith :: a -> [a] -> [a] -> ([a], [a])
@@ -128,6 +140,7 @@ padToLongerWith z (x:xs) (y:ys) =
   'maxMonoSubseqsBy' returns the list of these
   maximal monotone subsequences in order.
 -}
+--maxMonoSubseqsBy.S
 maxMonoSubseqsBy :: (a -> a -> Bool) -> [a] -> [[a]]
 maxMonoSubseqsBy p = unfoldr maxMonoSubseq
   where
@@ -139,6 +152,7 @@ maxMonoSubseqsBy p = unfoldr maxMonoSubseq
     accum (a:as) bs (z:zs) = if p a z
       then accum (z:a:as) bs zs
       else accum (a:as) (z:bs) zs
+--maxMonoSubseqsBy.E
 
 
 unfoldrMaybe :: (b -> Maybe (Maybe (a,b))) -> b -> Maybe [a]
@@ -150,6 +164,7 @@ unfoldrMaybe f x = case f x of
     Just (a:as)
 
 
+--getRuns.S
 getRuns :: (Eq a) => [a] -> [(a, Int)]
 getRuns = unfoldr firstRun
   where
@@ -157,15 +172,19 @@ getRuns = unfoldr firstRun
     firstRun []     = Nothing
     firstRun (x:xs) = let (as,bs) = span (== x) xs in
       Just ((x, 1 + count as), bs)
+--getRuns.E
 
+--fromRuns.S
 fromRuns :: [(a, Int)] -> [a]
 fromRuns = concatMap (\(x,k) -> replicate k x)
+--fromRuns.E
 
 padLast :: [a] -> [a]
 padLast []     = []
 padLast [x]    = repeat x
 padLast (x:xs) = x : padLast xs
 
+--diffList.S
 diffList :: (Eq a) => [a] -> [a] -> (Maybe a, Maybe a, Integer)
 diffList = comp 1
   where
@@ -175,7 +194,10 @@ diffList = comp 1
     comp k (x:xs) (y:ys) = if x == y
       then comp (k+1) xs ys
       else (Just x, Just y, k)
+--diffList.E
 
+
+--diffLists.S
 diffLists :: (Eq a) => [[a]] -> [[a]]
   -> (Maybe [a], Maybe [a], Integer, Integer)
 diffLists = comp 1
@@ -186,6 +208,7 @@ diffLists = comp 1
     comp m (xs:xss) (ys:yss) = case diffList xs ys of
       (Nothing, Nothing, _) -> comp (m+1) xss yss
       (_,_,n) -> (Just xs, Just ys, m, n)
+--diffLists.E
 
 peelPrefix :: (Eq a) => [a] -> [a] -> Maybe [a]
 peelPrefix [] ys = Just ys
@@ -193,3 +216,12 @@ peelPrefix _  [] = Nothing
 peelPrefix (x:xs) (y:ys) = if x == y
   then peelPrefix xs ys
   else Nothing
+
+--takeBetween.S
+takeBetween :: (Eq a) => (a,a) -> [a] -> [a]
+takeBetween (u,v) = concat . unfoldr (firstCut (u,v))
+  where
+    firstCut (u,v) ys = case dropWhile (/= u) ys of
+      []     -> Nothing
+      (_:zs) -> Just $ span (/= v) zs
+--takeBetween.E

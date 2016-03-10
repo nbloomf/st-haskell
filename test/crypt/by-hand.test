@@ -1,0 +1,4 @@
+sth-echo --char "WXYZ" | sth-crypt "a" | sth-escape
+>>>
+698;
+>>>= 0

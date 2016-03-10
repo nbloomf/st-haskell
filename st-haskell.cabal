@@ -7,6 +7,11 @@ Synopsis:       Haskell implementation of the utilities
                 in Software Tools by Kernighan and Plauger
 Build-Type:     Simple
 
+Executable sth-noop
+  main-is:        STH/NoOp/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
 Executable sth-copy
   main-is:        STH/Copy/Main.hs
   hs-source-dirs: src/
@@ -104,5 +109,10 @@ Executable sth-tail
 
 Executable sth-compare
   main-is:        STH/Compare/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-import
+  main-is:        STH/Import/Main.hs
   hs-source-dirs: src/
   build-depends:  base

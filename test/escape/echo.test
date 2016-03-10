@@ -1,4 +1,4 @@
-sth-echo --char "hello\nworld" | sth-unescape | sth-escape | sth-charreplace d "d\n"
+sth-echo --char "hello\nworld" | sth-unescape | sth-escape --char | sth-charreplace d "d\n"
 >>>
 hello\nworld
 >>>= 0

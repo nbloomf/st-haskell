@@ -16,7 +16,7 @@ main = do
     ["--char"] -> do
       charFilter (show . count)
       putNewLine
-    _ -> do
+    otherwise -> do
       charFilter (getLines >>> count >>> show)
       putNewLine
 

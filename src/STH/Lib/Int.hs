@@ -11,6 +11,7 @@ digitsToBase b k
           | t < b = [t]
           | otherwise = (t`rem`b) : (foo (t`quot`b))
 
+--showHex.S
 showHex :: (Integral n) => n -> String
 showHex n
   | n < 0  = '-' : showHex (-n)
@@ -34,3 +35,4 @@ showHex n
           | k == 13   = 'd'
           | k == 14   = 'e'
           | otherwise = 'f'
+--showHex.E

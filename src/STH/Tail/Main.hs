@@ -1,10 +1,12 @@
--- tail: 
+-- tail: get the last k lines or chars from stdin
 
 module Main where
 
 import System.Exit (exitSuccess, exitFailure)
 import System.Environment (getArgs)
-import STH.Lib (readDecimalNat, reportErrorMsgs, getLines, putStrLns)
+import STH.Lib
+  (readDecimalNat, reportErrorMsgs,
+   getLines, putStrLns)
 
 data Mode = Chars | Lines
 

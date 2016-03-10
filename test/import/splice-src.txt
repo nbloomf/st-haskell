@@ -1,0 +1,5 @@
+this should not print
+--start
+this should print
+--end
+this should not print

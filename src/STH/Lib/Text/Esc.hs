@@ -6,9 +6,12 @@ import Data.List (unfoldr)
 import Data.Char (ord, readLitChar)
 import STH.Lib.Int (showHex)
 
+--bsEsc.S
 bsEsc :: String -> String
 bsEsc = concatMap esc
+--bsEsc.E
 
+--esc.S
 esc :: Char -> String
 esc x
   | 32 <= k && k <= 126 = [x]
@@ -29,6 +32,7 @@ esc x
     show2Hex t = reverse $ take 2 (reverse (showHex t) ++ (repeat '0'))
     show4Hex t = reverse $ take 4 (reverse (showHex t) ++ (repeat '0'))
     show8Hex t = reverse $ take 8 (reverse (showHex t) ++ (repeat '0'))
+--esc.E
 
 
 {-|
@@ -37,6 +41,7 @@ esc x
   replacing them with their ASCII or Unicode
   referents.
 -}
+--bsUnEsc.S
 bsUnEsc :: String -> String
 bsUnEsc = concat . unfoldr firstChar
   where
@@ -149,3 +154,4 @@ bsUnEsc = concat . unfoldr firstChar
             []        -> Just ('\\':digs, ds)
             ((x,_):_) -> Just ([x],ds)
           False -> Just ('\\':digs, ds)
+--bsUnEsc.E

@@ -12,42 +12,16 @@ We will implement these operations bare-handed.
 
 
 ```haskell
-data Bit
-  = Zero | One
-  deriving (Eq, Show)
+&splice src/STH/Lib/XOR.hs between --XOR.S and --XOR.E
 
-intToBits :: (Integral n) => n -> [Bit]
-intToBits k = case getBits k of
-  [] -> [Zero]
-  bs -> bs
-  where
-    getBits t
-      | t <= 0    = []
-      | otherwise = case even t of
-          True  -> Zero : (getBits $ t`quot`2)
-          False -> One  : (getBits $ (t-1)`quot`2)
 
-bitToInt :: (Integral n) => Bit -> n
-bitToInt Zero = 0
-bitToInt One  = 1
+&splice src/STH/Lib/XOR.hs between --Bit.S and --Bit.E
 
-bitsToInt :: (Integral n) => [Bit] -> n
-bitsToInt = sum . zipWith (*) [2^t | t <- [0..]] . map bitToInt
 
-bitXOR :: Bit -> Bit -> Bit
-bitXOR Zero Zero = Zero
-bitXOR Zero One  = One
-bitXOR One  Zero = One
-bitXOR One  One  = Zero
+&splice src/STH/Lib/XOR.hs between --int.XOR.S and --int.XOR.E
 
-bitsXOR :: [Bit] -> [Bit] -> [Bit]
-bitsXOR [] ys = ys
-bitsXOR xs [] = xs
-bitsXOR (x:xs) (y:ys)
-  = (bitXOR x y) : bitsXOR xs ys
 
-intXOR :: (Integral n) => n -> n -> n
-intXOR a b = bitsToInt $ bitsXOR (intToBits a) (intToBits b)
+&splice src/STH/Lib/XOR.hs between --char.XOR.S and --char.XOR.E
 ```
 
 
@@ -68,39 +42,9 @@ Here's the main program.
 
 
 ```haskell
--- sth-crypt: xor stdin with a list of keys
---   character-oriented
-
-module Main where
-
-import SoftwareTools.Lib (getArgs, exitSuccess)
-import SoftwareTools.Lib.IO (charFilter)
-import SoftwareTools.Lib.Text
-  (toCodePoint, fromCodePoint, backslashUnEscape)
-import SoftwareTools.Lib.Bit (intXOR)
-
-main :: IO ()
-main = do
-  keys <- getArgs
-  charFilter (cryptKeys (map backslashUnEscape keys))
-  exitSuccess
-
-
-cryptKeys :: [String] -> String -> String
-cryptKeys []     str = str
-cryptKeys (k:ks) str = cryptKeys ks (crypt k str)
-
-crypt :: String -> String -> String
-crypt ""  str  = str
-crypt key str = zipWith xorChar str (concat $ repeat key)
-  where
-    xorChar :: Char -> Char -> Char
-    xorChar x y
-      = fromCodePoint $ intXOR (toCodePoint x) (toCodePoint y)
+&splice src/STH/Crypt/Main.hs
 ```
 
-
-Some notes: ``toCodePoint`` and ``fromCodePoint`` are synonyms for standard library functions which (surprise!) convert characters to and from their unicode code points.
 
 We definitely want the user to specify an encryption key from the command line. But generally, the user can specify many (or no!) command line arguments. What should we do if that happens?
 

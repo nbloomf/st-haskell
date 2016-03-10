@@ -1,0 +1,4 @@
+sth-echo "\b" | sth-unescape | sth-charreplace "\b" "wut"
+>>>
+wut
+>>>= 0

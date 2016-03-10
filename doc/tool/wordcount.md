@@ -4,17 +4,15 @@ subtitle: count words on stdin
 author: nbloomf
 ---
 
-This program takes an expansive view of what a "word" is: maximal substrings not containing any whitespace characters (space, ``\n``, ``\t``, ``\r``, ``\v``, or any other unicode character which the standard ``isSpace`` function detects).
+This program takes an expansive view of what a "word" is: maximal substrings not containing any whitespace characters (space, ``\n``, ``\t``, ``\r``, ``\v``, or any other unicode character which the standard ``isSpace`` function detects). For instance, the following are all "words".
+
+    atrocious  1234  --char  #$#%#$@^^^  "Horatio,
+
+We already have a function to count items in a list. The ``getWords`` function splits a string of text into a list of words.
 
 
 ```haskell
-getWords :: String -> [String]
-getWords = unfoldr firstWord
-  where
-    firstWord :: String -> Maybe (String, String)
-    firstWord xs = case dropWhile isSpace xs of
-      "" -> Nothing
-      ys -> Just $ break isSpace ys
+&splice src/STH/Lib/Text.hs between --getWords.S and --getWords.E
 ```
 
 
@@ -22,17 +20,7 @@ For this function we used ``getContents`` and reused ``count``. The ``getWords``
 
 
 ```haskell
--- sth-wordcount: count words on stdin
-
-module Main where
-
-import SoftwareTools.Lib.List (count)
-import SoftwareTools.Lib.Text (getWords)
-
-main :: IO ()
-main = do
-  charFilter (show . count . getWords)
-  putNewLine
+&splice src/STH/WordCount/Main.hs
 ```
 
 

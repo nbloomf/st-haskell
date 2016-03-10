@@ -1,0 +1,6 @@
+cat basic-temp.txt | sth-import
+>>>
+hello
+there
+world
+>>>= 0

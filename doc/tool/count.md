@@ -15,9 +15,7 @@ Let's write a generic list-length counter:
 
 
 ```haskell
-count :: [a] -> Integer
-count = foldl' inc 0
-  where inc n _ = n+1
+&splice src/STH/Lib/List.hs between --count.S and --count.E
 ```
 
 
@@ -41,14 +39,7 @@ This logic is captured by the ``getLines`` function, which splits a string into 
 
 
 ```haskell
-getLines :: String -> [String]
-getLines = unfoldr firstLine
-  where
-    firstLine :: String -> Maybe (String, String)
-    firstLine xs = case break (== '\n') xs of
-      ("","")   -> Nothing
-      (as,"")   -> Just (as,"")
-      (as,b:bs) -> Just (as,bs)
+&splice src/STH/Lib/Text/Format/Line.hs between --getLines.S and --getLines.E
 ```
 
 
@@ -58,29 +49,8 @@ Our main program is a little more complicated than Kernighan and Plauger's becau
 
 
 ```haskell
--- sth-count: count lines or chars on stdin
-
-module Main where
-
-import System.Exit (exitSuccess)
-import System.Environment (getArgs)
-import Control.Arrow ((>>>))
-import STH.Lib
-  (count, getLines, putNewLine, charFilter)
-
-main :: IO ()
-main = do
-  args <- getArgs
-
-  case args of
-    ["--char"] -> do
-      charFilter (show . count)
-    _ -> do
-      charFilter (getLines >>> count >>> show)
-
-  putNewLine
-  exitSuccess
+&splice src/STH/Count/Main.hs
 ```
 
 
-``putNewLine`` is a semantic synonym for ``putStrLn ""``. Note also that we've demonstrated the ``>>>`` operator from ``Control.Arrow`` in contrast with composition. This is a standard library operator which (used here) is simply reversed function composition; it allows us to read the definition of ``main`` as if data flows from left to right, following the arrows.
+``putNewLine`` is a semantic synonym for ``putStrLn ""``. Note also that we've demonstrated the ``>>>`` operator from ``Control.Arrow`` in contrast with composition. This is a standard library operator which (used here) is simply reversed function composition; it allows us to read chains of functions as if data flows from left to right, following the arrows.

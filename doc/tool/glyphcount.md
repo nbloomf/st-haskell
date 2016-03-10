@@ -12,16 +12,7 @@ Given this difficulty, we will make a simplifying assumption. **A "glyph" is a n
 
 
 ```haskell
-getGlyphs :: String -> [String]
-getGlyphs = unfoldr firstGlyph
-  where
-    firstGlyph :: String -> Maybe (String, String)
-    firstGlyph "" = Nothing
-    firstGlyph (x:xs) = if isMark x
-      then Just $ break (not . isMark) (x:xs)
-      else do
-        let (as,bs) = break (not . isMark) xs
-        Just (x:as, bs)
+&splice src/STH/Lib/Text.hs between --getGlyphs.S and --getGlyphs.E
 ```
 
 
@@ -29,16 +20,5 @@ Now the main function is much like that of ``count``.
 
 
 ```haskell
--- sth-glyphcount: count glyphs on stdin
-
-module Main where
-
-import SoftwareTools.Lib.IO (charFilter, putNewLine)
-import SoftwareTools.Lib.List (count)
-import SoftwareTools.Lib.Text (getGlyphs)
-
-main :: IO ()
-main = do
-  charFilter (show . count . getGlyphs)
-  putNewLine
+&splice src/STH/GlyphCount/Main.hs
 ```

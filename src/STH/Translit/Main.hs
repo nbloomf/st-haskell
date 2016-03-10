@@ -1,5 +1,4 @@
 -- sth-translit: transliterate characters on stdin
---   character-oriented
 
 module Main where
 
@@ -7,14 +6,14 @@ import System.Environment (getArgs)
 import System.Exit (exitSuccess, exitFailure)
 import STH.Lib
   (charFilter, applyListMap, padLast,
-   readCharRange, reportErrorMsgs)
+   readCharSeq, reportErrorMsgs, bsUnEsc)
 
 
 main :: IO ()
 main = do
   args <- getArgs
 
-  (from,to) <- case map readCharRange args of
+  (from,to) <- case map (readCharSeq . bsUnEsc) args of
     [Just as]          -> return (as, "")
     [Just as, Just bs] -> return (as, bs)
     otherwise          -> argError

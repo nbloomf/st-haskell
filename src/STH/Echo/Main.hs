@@ -2,8 +2,9 @@
 
 module Main where
 
-import STH.Lib (getArgs, exitSuccess)
-import STH.Lib.IO (putStrLns)
+import System.Exit (exitSuccess)
+import System.Environment (getArgs)
+import STH.Lib (putStrLns)
 
 main :: IO ()
 main = do

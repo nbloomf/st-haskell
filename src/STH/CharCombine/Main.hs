@@ -1,10 +1,10 @@
 -- sth-charcombine: replace combining unicode chars with precomposed chars
---   character-oriented
 
 module Main where
 
 import System.Exit (exitSuccess)
-import STH.Lib (charFilter, composeGlyphs)
+import STH.Lib
+  (charFilter, composeGlyphs)
 
 main :: IO ()
 main = do

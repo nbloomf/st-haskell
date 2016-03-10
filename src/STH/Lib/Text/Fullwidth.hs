@@ -7,6 +7,7 @@ import STH.Lib.List (applyListMap)
 {-|
   Replace unicode characters by fullwidth equivalents.
 -}
+--toFullwidth.S
 toFullwidth :: Char -> Char
 toFullwidth = applyListMap full
   where
@@ -31,3 +32,4 @@ toFullwidth = applyListMap full
       , ('v','ｖ'), ('w','ｗ'),  ('x','ｘ'), ('y','ｙ'), ('z','ｚ')
       , ('{','｛'), ('|','｜'),  ('}','｝'), ('~','～'), (' ','　')
       ]
+--toFullwidth.E

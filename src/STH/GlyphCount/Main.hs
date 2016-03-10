@@ -2,11 +2,12 @@
 
 module Main where
 
-import STH.Lib.IO (charFilter, putNewLine)
-import STH.Lib.List (count)
-import STH.Lib.Text (getGlyphs)
+import System.Exit (exitSuccess)
+import STH.Lib
+  (charFilter, putNewLine, count, getGlyphs)
 
 main :: IO ()
 main = do
   charFilter (show . count . getGlyphs)
   putNewLine
+  exitSuccess

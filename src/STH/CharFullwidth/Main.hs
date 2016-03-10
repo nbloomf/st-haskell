@@ -1,5 +1,4 @@
 -- sth-charfullwidth: replace characters with fullwidth equivalents
---   character-oriented
 
 module Main where
 

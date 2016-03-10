@@ -1,11 +1,9 @@
 -- sth-unescape: interpret C and ASCII backslash escape codes on stdin
---   character-oriented
 
 module Main where
 
-import STH.Lib (exitSuccess)
-import STH.Lib.IO (charFilter)
-import STH.Lib.Text.Esc (bsUnEsc)
+import System.Exit (exitSuccess)
+import STH.Lib (charFilter, bsUnEsc)
 
 
 main :: IO ()

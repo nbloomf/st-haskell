@@ -1,30 +1,22 @@
--- sth-crypt: xor stdin with a list of keys
---   character-oriented
+-- sth-crypt: xor chars on stdin with a list of keys
 
 module Main where
 
 import System.Environment (getArgs)
 import System.Exit (exitSuccess)
-import STH.Lib
-  (charFilter, toCodePoint, fromCodePoint,
-   bsUnEsc, intXOR)
+import STH.Lib (charFilter, bsUnEsc, xor)
 
 
 main :: IO ()
 main = do
   keys <- fmap (map bsUnEsc) getArgs
-  charFilter (cryptWithKeys keys)
+  charFilter (cryptWith keys)
   exitSuccess
 
 
-cryptWithKeys :: [String] -> String -> String
-cryptWithKeys []     str = str
-cryptWithKeys (k:ks) str = cryptWithKeys ks (crypt k str)
-
-crypt :: String -> String -> String
-crypt ""  str = str
-crypt key str = zipWith xorChar str (concat $ repeat key)
+cryptWith :: [String] -> String -> String
+cryptWith ks str = foldr crypt str ks
   where
-    xorChar :: Char -> Char -> Char
-    xorChar x y
-      = fromCodePoint $ intXOR (toCodePoint x) (toCodePoint y)
+    crypt :: String -> String -> String
+    crypt ""  str = str
+    crypt key str = zipWith xor str (concat $ repeat key)

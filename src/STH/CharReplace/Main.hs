@@ -1,31 +1,33 @@
 -- sth-charreplace: replace chars with strings on stdin
---   character-oriented
 
 module Main where
 
 import System.Environment (getArgs)
 import System.Exit (exitSuccess, exitFailure)
 import STH.Lib
-  (charFilter, bsUnEsc, readCharRange, reportErrorMsgs)
+  (charFilter, bsUnEsc, readCharSeq,
+   reportErrorMsgs)
 
 main :: IO ()
 main = do
   args <- getArgs
 
-  (notflag,from,to) <- case args of
-    [as] -> case readCharRange as of
-      Just xs -> return (False, xs, "")
-      Nothing -> argError
-    ["--not",as] -> case readCharRange as of
-      Just xs -> return (True, xs, "")
-      Nothing -> argError
-    [as,bs] -> case readCharRange as of
-      Just xs -> return (False, xs, bsUnEsc bs)
-      Nothing -> argError
-    ["--not",as,bs] -> case readCharRange as of
-      Just xs -> return (True, xs, bsUnEsc bs)
-      Nothing -> argError
-    otherwise          -> argError
+  (notflag,from,to) <- do
+    let
+      (flag,rest) = case args of
+        ("--not":xs) -> (True,xs)
+        xs           -> (False,xs)
+
+    (from,to) <- case rest of
+      [as] -> case readCharSeq (bsUnEsc as) of
+        Just xs -> return (xs, "")
+        Nothing -> argError
+      [as,bs] -> case readCharSeq (bsUnEsc as) of
+        Just xs -> return (xs, bsUnEsc bs)
+        Nothing -> argError
+      otherwise -> argError
+
+    return (flag,from,to)
 
   let
     remove = case notflag of

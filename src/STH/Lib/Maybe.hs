@@ -9,9 +9,11 @@ module STH.Lib.Maybe (
   given predicate and collapses to 'Nothing'
   if not.
 -}
+--filterMaybe.S
 filterMaybe :: (a -> Bool) -> Maybe a -> Maybe a
 filterMaybe p x = do
   y <- x
   case p y of
     True  -> Just y
     False -> Nothing
+--filterMaybe.E

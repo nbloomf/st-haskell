@@ -1,13 +1,9 @@
 -- sth-expand: uncompress stdin (run length encoding)
---   character-oriented
 
 module Main where
 
-import STH.Lib
-  (exitSuccess, exitFailure)
-import STH.Lib.IO (charFilter)
-import STH.Lib.Text.RLE (rlDecode)
-import STH.Lib.Error (reportErrorMsgs)
+import System.Exit (exitSuccess, exitFailure)
+import STH.Lib (charFilter, rlDecode, reportErrorMsgs)
 
 main :: IO ()
 main = do

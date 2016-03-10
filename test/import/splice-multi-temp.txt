@@ -1,0 +1,4 @@
+hello
+import splice-multi-src2.txt between --start and --end
+world
+import splice-multi-src1.txt

@@ -1,0 +1,3 @@
+hello
+import splice-src.txt between --start and --end
+world
