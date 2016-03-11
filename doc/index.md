@@ -21,7 +21,7 @@ The purpose of this project is to learn, and so there are some self-imposed rule
 2. Follow established conventions regarding things like command-line arguments and return codes.
 3. Think very hard before making a tool less consistent or more complicated.
 
-I will prefix the names of these ports with ``sth-``, to avoid clashing with existing real programs. And of course all should be considered works-in-progress.
+I will prefix the names of these ports with ``sth-``, to avoid clashing with existing real programs. And of course all should be considered works-in-progress. These tools operate on text, which turns out to be [more interesting](/pages/sth/formats.html) than I realized when I started this project.
 
 
 ## The Tools (Book Order)
@@ -56,6 +56,7 @@ I will prefix the names of these ports with ``sth-``, to avoid clashing with exi
 ### Chapter 3: Files
 
 * [``compare``](/pages/sth/tool/compare.html): find the first position where two text streams differ
+* [``import``](/pages/sth/tool/import.html): splice contents of a file into ``stdin``
 
 
 ## Why Haskell?

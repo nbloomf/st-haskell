@@ -28,10 +28,12 @@ lineFilter f = do
   sequence_ $ map (putStrLn . f) xs
 --lineFilter.E
 
+--lineFilterIO.S
 lineFilterIO :: (String -> IO ()) -> IO ()
 lineFilterIO f = do
   xs <- fmap getLines getContents
   sequence_ $ map f xs
+--lineFilterIO.E
 
 
 putNewLine :: IO ()

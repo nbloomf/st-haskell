@@ -9,16 +9,18 @@ import STH.Lib
   (lineFilterIO, getWords, getLines,
    putStrLns, takeBetween, reportErrorMsgs)
 
--- We accept two kinds of import commands
+
+-- We accept two kinds of import commands:
 data Import
   = Whole   String
   | Between String String String
+
 
 main :: IO ()
 main = do
   args <- getArgs
 
-  key <- case args of
+  keyword <- case args of
     []             -> return "import"
     ["--with",str] -> return str
     otherwise      -> argErr >> exitFailure
@@ -30,7 +32,7 @@ main = do
       [x,file] -> if x == key
         then Just $ Whole file
         else Nothing
-      [x,file,"between",open,"and",close] -> if x == key
+      [x,file,"between",open,"and",close] -> if x == keyword
         then Just $ Between file open close
         else Nothing
       otherwise -> Nothing
