@@ -1,8 +1,9 @@
 module STH.Lib.IO (
-  charFilter, lineFilter, lineFilterIO, putNewLine, putStrLns
+  charFilter, lineFilter, lineFilterIO, putNewLine, putStrLns, putCCLns
 ) where
 
 import STH.Lib.Text.Format.Line (getLines)
+import STH.Lib.Text.Format.ASACarriageControl (CCLine(), renderCCLine)
 
 
 {-|
@@ -36,8 +37,12 @@ lineFilterIO f = do
 --lineFilterIO.E
 
 
+
 putNewLine :: IO ()
 putNewLine = putStrLn ""
 
 putStrLns :: [String] -> IO ()
 putStrLns = sequence_ . map putStrLn
+
+putCCLns :: [CCLine] -> IO ()
+putCCLns = sequence_ . map (putStrLn . renderCCLine) 

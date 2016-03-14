@@ -3,10 +3,10 @@
 module Main where
 
 import System.Exit (exitSuccess)
-import STH.Lib (lineFilter, overstrike)
+import STH.Lib (lineFilter, toCCLine, renderCCLine)
 
 
 main :: IO ()
 main = do
-  lineFilter overstrike
+  lineFilter (renderCCLine . toCCLine)
   exitSuccess

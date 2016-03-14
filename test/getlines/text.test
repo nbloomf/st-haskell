@@ -1,0 +1,5 @@
+sth-echo hello there world | sth-getlines 1-2
+>>>
+hello
+there
+>>>= 0

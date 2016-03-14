@@ -52,11 +52,13 @@ I will prefix the names of these ports with ``sth-``, to avoid clashing with exi
 * [``translit``](/pages/sth/tool/translit.html): transliterate or remove chars on ``stdin``
 * [``charreplace``](/pages/sth/tool/charreplace.html): replace chars by strings on ``stdin``
 * [``tail``](/pages/sth/tool/tail.html): get the last k lines or chars from ``stdin``
+* [``getlines``](/pages/sth/tool/getlines.html): extract lines from ``stdin`` by index
 
 ### Chapter 3: Files
 
 * [``compare``](/pages/sth/tool/compare.html): find the first position where two text streams differ
 * [``import``](/pages/sth/tool/import.html): splice contents of a file into ``stdin``
+* [``concat``](/pages/sth/tool/concat.html): concatenate files
 
 
 ## Why Haskell?

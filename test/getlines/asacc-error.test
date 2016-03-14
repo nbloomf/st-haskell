@@ -1,0 +1,2 @@
+sth-echo "hello" | sth-getlines --asacc "1"
+>>>= !0

@@ -1,4 +1,3 @@
-getlines: extract lines by index, take range args, 10pm2 (plus or minus)
 charcollapse: collapse adjacent instances of characters. take range args.
   also take an optional int arg to specify a truncation size (default is 1)
   e.g. charcollapse "a" 2 replaces runs of 3 or more as with 2, but leaves 1 alone.
@@ -8,10 +7,6 @@ numberlines: number lines on stdin
   (options: hex, starting from, separating character (def. tab)) (line -> delimited line)
 escape: add (mutually exclusive) options --not and --only that take character ranges.
   Extend character ranges to allow for named sets of characters, e.g. [:alnum:]
+  take a mode flag: line mode does not escape \n
 cogrep: given a regular expression, generate random data which matches it
-
-types of tools:
-  sources, filters, sinks
-
-types of streams:
-  char, line, delimited, structured (json, html, etc.)
+wye: clone of tee

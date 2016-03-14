@@ -1,0 +1,10 @@
+sth-echo a b c d e f g h i j k | sth-getlines "3+4,1-5"
+>>>
+a
+b
+c
+d
+e
+g
+k
+>>>= 0

@@ -107,6 +107,11 @@ Executable sth-tail
   hs-source-dirs: src/
   build-depends:  base
 
+Executable sth-getlines
+  main-is:        STH/GetLines/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
 Executable sth-compare
   main-is:        STH/Compare/Main.hs
   hs-source-dirs: src/
@@ -114,5 +119,10 @@ Executable sth-compare
 
 Executable sth-import
   main-is:        STH/Import/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-concat
+  main-is:        STH/Concat/Main.hs
   hs-source-dirs: src/
   build-depends:  base

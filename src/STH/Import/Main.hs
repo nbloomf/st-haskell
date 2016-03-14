@@ -29,7 +29,7 @@ main = do
     -- see if a line is an import command
     readCommand :: String -> Maybe Import
     readCommand str = case getWords str of
-      [x,file] -> if x == key
+      [x,file] -> if x == keyword
         then Just $ Whole file
         else Nothing
       [x,file,"between",open,"and",close] -> if x == keyword

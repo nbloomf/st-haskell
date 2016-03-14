@@ -1,0 +1,5 @@
+sth-echo "hello world" | sth-concat - -
+>>>
+hello world
+hello world
+>>>= 0

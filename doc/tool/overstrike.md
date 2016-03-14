@@ -48,12 +48,19 @@ In fact this is a *most* efficient set of overstrike lines for this example, sin
 
 To identify a coloring of the char-int graph, we (1) drop all the blanks, (2) sort the list by column index, and (3) split the list into maximal subsequences by column index. (What?) Finally, (4) thinking of these char-int pairs as sparse lists, convert to real actual lists, using space characters for any missing indices.
 
+We will use an internal representation, ``CCLine``, for lines formatted using a simplified version of the ASA carriage control scheme; a ``CCLine`` is a list of overstrike lines. Rendering a ``CCLine`` gives its unicode representation. (Note that the constructors of ``CCLine`` are internal to a single library module; programs can only create and manipulate ``CCLine``s via the functions provided by this module. This provides a very basic kind of future-proofing.)
+
 
 ```haskell
-&splice src/STH/Lib/Text/Format/ASACarriageControl.hs between --overstrike.S and --overstrike.E
+&splice src/STH/Lib/Text/Format/ASACarriageControl.hs between --CCLine.S and --CCLine.E
+```
 
 
-&splice src/STH/Lib/Text/Format/ASACarriageControl.hs between --overstrikeLines.S and --overstrikeLines.E
+Now ``toCCLine`` reads a ``CCLine`` from a string.
+
+
+```haskell
+&splice src/STH/Lib/Text/Format/ASACarriageControl.hs between --toCCLine.S and --toCCLine.E
 
 
 &splice src/STH/Lib/List.hs between --maxMonoSubseqsBy.S and --maxMonoSubseqsBy.E

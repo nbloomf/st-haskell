@@ -1,0 +1,5 @@
+sth-echo " hello" "+wut" " world" "+yay" | sth-getlines --asacc "2"
+>>>
+ world
++yay
+>>>= 0

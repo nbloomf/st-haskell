@@ -2,11 +2,12 @@ module STH.Lib.List (
   count, applyListMap, break2, fromSparseList,
   spanAtMostWhile, padToByAfter, maxMonoSubseqsBy,
   unfoldrMaybe, getRuns, fromRuns, padLast, padToLongerWith,
-  diffList, diffLists, peelPrefix, takeBetween
+  diffList, diffLists, peelPrefix, takeBetween, breakAt,
+  getEltsByIndex
 ) where
 
 import Data.Foldable (foldl')
-import Data.List (unfoldr)
+import Data.List (unfoldr, sort)
 
 
 {-|
@@ -225,3 +226,18 @@ takeBetween (u,v) = concat . unfoldr (firstCut (u,v))
       []     -> Nothing
       (_:zs) -> Just $ span (/= v) zs
 --takeBetween.E
+
+breakAt :: (Eq a) => a -> [a] -> [[a]]
+breakAt x = breakBy (== x)
+
+breakBy :: (a -> Bool) -> [a] -> [[a]]
+breakBy _ [] = [[]]
+breakBy p xs = case break p xs of
+  (ys,[])   -> [ys]
+  (ys,_:zs) -> ys : breakBy p zs
+
+
+--getEltsByIndex.S
+getEltsByIndex :: (Int -> Bool) -> [a] -> [a]
+getEltsByIndex p xs = map snd $ filter (p . fst) $ zip [1..] xs
+--getEltsByIndex.E

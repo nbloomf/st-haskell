@@ -7,6 +7,7 @@ module STH.Lib (
   module STH.Lib.Maybe,
   module STH.Lib.Read,
   module STH.Lib.Read.CharSeq,
+  module STH.Lib.Read.IntSet,
   module STH.Lib.Text,
   module STH.Lib.Text.RLE,
   module STH.Lib.Text.Esc,
@@ -25,6 +26,7 @@ import STH.Lib.List
 import STH.Lib.Maybe
 import STH.Lib.Read
 import STH.Lib.Read.CharSeq
+import STH.Lib.Read.IntSet
 import STH.Lib.Text
 import STH.Lib.Text.RLE
 import STH.Lib.Text.Esc

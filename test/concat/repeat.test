@@ -1,0 +1,5 @@
+sth-concat file1.txt file1.txt
+>>>
+file1
+file1
+>>>= 0
