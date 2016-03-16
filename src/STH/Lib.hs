@@ -15,7 +15,8 @@ module STH.Lib (
   module STH.Lib.Text.Fullwidth,
   module STH.Lib.Text.Format.Line,
   module STH.Lib.Text.Format.Delimited,
-  module STH.Lib.Text.Format.ASACarriageControl
+  module STH.Lib.Text.Format.ASACarriageControl,
+  module STH.Lib.Monad.LinePrinter
 ) where
 
 import STH.Lib.XOR
@@ -35,3 +36,4 @@ import STH.Lib.Text.Fullwidth
 import STH.Lib.Text.Format.Line
 import STH.Lib.Text.Format.Delimited
 import STH.Lib.Text.Format.ASACarriageControl
+import STH.Lib.Monad.LinePrinter

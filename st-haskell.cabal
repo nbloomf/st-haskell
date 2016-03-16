@@ -126,3 +126,13 @@ Executable sth-concat
   main-is:        STH/Concat/Main.hs
   hs-source-dirs: src/
   build-depends:  base
+
+Executable sth-wye
+  main-is:        STH/Wye/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base
+
+Executable sth-pslineprint
+  main-is:        STH/PSLinePrint/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base

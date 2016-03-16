@@ -59,6 +59,8 @@ I will prefix the names of these ports with ``sth-``, to avoid clashing with exi
 * [``compare``](/pages/sth/tool/compare.html): find the first position where two text streams differ
 * [``import``](/pages/sth/tool/import.html): splice contents of a file into ``stdin``
 * [``concat``](/pages/sth/tool/concat.html): concatenate files
+* [``wye``](/pages/sth/tool/wye.html): write ``stdin`` to files and ``stdout``
+* [``pslineprint``](/pages/sth/tool/pslineprint.html): print ``stdin`` to postscript
 
 
 ## Why Haskell?

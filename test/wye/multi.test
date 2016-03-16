@@ -1,0 +1,2 @@
+sth-echo "hello" | sth-wye out1.txt out2.txt | sth-compare out1.txt out2.txt
+>>>= 0

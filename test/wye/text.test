@@ -1,0 +1,2 @@
+sth-echo "hello" | sth-wye out.txt | sth-compare out.txt
+>>>= 0

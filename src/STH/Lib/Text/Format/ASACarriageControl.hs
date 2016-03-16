@@ -1,5 +1,5 @@
 module STH.Lib.Text.Format.ASACarriageControl (
-  CCLine(), renderCCLine, toCCLine, readCCLines
+  CCLine(), fromCCLine, renderCCLine, toCCLine, readCCLines
 ) where
 
 import Control.Arrow ((>>>))
@@ -12,6 +12,9 @@ import STH.Lib.Text.Format.Line (getLines)
 data CCLine
   = CCLine [String]
   deriving (Show)
+
+fromCCLine :: CCLine -> [String]
+fromCCLine (CCLine xs) = xs
 
 renderCCLine :: CCLine -> String
 renderCCLine (CCLine xs)
@@ -53,6 +56,7 @@ toCCLine =
           '\b'      -> accum zs (max 1 (k-1)) cs
           otherwise -> accum ((c,k):zs) (k+1) cs
 --toCCLine.E
+
 
 --readCCLines.S
 readCCLines :: String -> Maybe [CCLine]
