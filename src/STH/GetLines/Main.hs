@@ -18,19 +18,26 @@ main = do
   args <- getArgs
 
   -- interpret arguments
-  (mode,tests) <- do
+  (mode,inv,tests) <- do
     let
-      (flag,rest) = case args of
+      (modeflag,rest') = case args of
         ("--asacc":zs) -> (ASACC, zs)
         zs             -> (Lines, zs)
+
+      (notflag,rest) = case rest' of
+        ("--not":zs) -> (True,  zs)
+        zs           -> (False, zs)
 
     ps <- case sequence $ map readIntSet rest of
       Just xs -> return xs
       Nothing -> argErr >> exitFailure
 
-    return (flag,ps)
+    return (modeflag,notflag,ps)
 
-  let get xs p = getEltsByIndex p xs
+  let
+    get xs p = case inv of
+      False -> getEltsByIndex p xs
+      True  -> getEltsByIndex (not . p) xs
 
   case mode of
     Lines -> do

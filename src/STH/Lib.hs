@@ -13,6 +13,7 @@ module STH.Lib (
   module STH.Lib.Text.Esc,
   module STH.Lib.Text.Compose,
   module STH.Lib.Text.Fullwidth,
+  module STH.Lib.Text.Paginate,
   module STH.Lib.Text.Format.Line,
   module STH.Lib.Text.Format.Delimited,
   module STH.Lib.Text.Format.ASACarriageControl,
@@ -33,6 +34,7 @@ import STH.Lib.Text.RLE
 import STH.Lib.Text.Esc
 import STH.Lib.Text.Compose
 import STH.Lib.Text.Fullwidth
+import STH.Lib.Text.Paginate
 import STH.Lib.Text.Format.Line
 import STH.Lib.Text.Format.Delimited
 import STH.Lib.Text.Format.ASACarriageControl

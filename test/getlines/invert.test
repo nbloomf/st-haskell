@@ -1,0 +1,5 @@
+sth-echo a b c | sth-getlines --not "2"
+>>>
+a
+c
+>>>= 0

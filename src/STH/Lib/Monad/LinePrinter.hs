@@ -33,6 +33,7 @@ defaultGeom = Geom
   }
 --PageGeom.E
 
+
 --PageGeomComp.S
 numLinesPerPage :: Geom -> Int
 numLinesPerPage geom = floor ((pH - (2*vM)) / (fS + lS))
@@ -61,19 +62,19 @@ lineStartPos geom k = (hM, pH - vM - k*(fS + lS))
 
 --LPState.S
 data LPState = LPState
-  { pageSettings :: Geom
-  , currentLine  :: Int
-  , currentPage  :: Int
-  , pageIsDirty  :: Bool
+  { pageSettings  :: Geom
+  , currentLine   :: Int
+  , currentPage   :: Int
+  , pageInProcess :: Bool
   }
 
 
 makeLPState :: Geom -> LPState
-makeLPState geom = LPState
-  { pageSettings = geom
-  , currentLine  = 1
-  , currentPage  = 1
-  , pageIsDirty  = False
+makeLPState geom  = LPState
+  { pageSettings  = geom
+  , currentLine   = 1
+  , currentPage   = 1
+  , pageInProcess = False
   }
 --LPState.E
 
@@ -117,40 +118,44 @@ lpInitialize = LP init
       let k = fontSize $ pageSettings st
       putStrLn $ show k ++ " scalefont"
       putStrLn "setfont\n"
-      return ((),st)
+      return ((), st)
 
+lpStartPage :: LinePrinter ()
+lpStartPage = LP sp
+  where
+    sp st = do
+      if pageInProcess st == True
+        then return ()
+        else putStrLn $ "%%Page: " ++ show (currentPage st)
+      return ((), st { pageInProcess = True })
 
 lpShutDown :: LinePrinter ()
 lpShutDown = LP sd
   where
-    sd st = case pageIsDirty st of 
-      True -> do
-        putStrLn "showpage"
-        return ((),st)
-      False -> return ((),st)
+    sd st = do
+        if pageInProcess st == False
+          then return ()
+          else putStrLn "showpage"
+        return ((), st { pageInProcess = False })
 --LPCommand.E
 
 
 --lpPutStr.S
 lpPutStr :: String -> LinePrinter ()
-lpPutStr str = LP write
+lpPutStr ""  = return ()
+lpPutStr str = lpStartPage >> LP write
   where
     write st = do
-      case pageIsDirty st of
-        True  -> return ()
-        False -> do
-          let pg = currentPage st
-          putStrLn $ "%%Page: " ++ show pg
       let (x,y) = lineStartPos (pageSettings st) (currentLine st)
       putStrLn $ show x ++ " " ++ show y ++ " moveto"
       putStr $ unicodeToPS str
-      return ((), st {pageIsDirty = True})
+      return ((), st)
 --lpPutStr.E
 
 
 --lpLineFeed.S
 lpLineFeed :: LinePrinter ()
-lpLineFeed = LP lf
+lpLineFeed = lpStartPage >> LP lf
   where
     lf st = do
       let
@@ -160,7 +165,7 @@ lpLineFeed = LP lf
       if kOld + 1 > lpp
         then do
           putStrLn "showpage\n"
-          return ((), st {currentLine = 1, currentPage = mOld+1})
+          return ((), st {currentLine = 1, currentPage = mOld+1, pageInProcess = False})
         else do
           return ((), st {currentLine = kOld+1, currentPage = mOld})
 
@@ -191,26 +196,3 @@ lpPrintCCLns lns = do
   lpInitialize
   mapM_ lpPutCCStrLn lns
   lpShutDown
-
-lpPageFeed :: LinePrinter ()
-lpPageFeed = LP pf
-  where
-    pf st = do
-      let mOld = currentPage st
-      if pageIsDirty st
-        then putStrLn "showpage\n"
-        else return ()
-      return ((), st { currentLine = 1, currentPage = mOld+1, pageIsDirty = False })
-
-
-lpBlankPage :: LinePrinter ()
-lpBlankPage = LP bp
-  where
-    bp st = do
-      let mOld = currentPage st
-      if pageIsDirty st
-        then putStrLn "showpage\n"
-        else return ()
-      putStrLn $ "%%Page: " ++ show (mOld + 1)
-      putStrLn "showpage\n"
-      return ((), st { currentLine = 1, currentPage = mOld+2, pageIsDirty = False })

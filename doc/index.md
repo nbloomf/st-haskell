@@ -61,6 +61,7 @@ I will prefix the names of these ports with ``sth-``, to avoid clashing with exi
 * [``concat``](/pages/sth/tool/concat.html): concatenate files
 * [``wye``](/pages/sth/tool/wye.html): write ``stdin`` to files and ``stdout``
 * [``pslineprint``](/pages/sth/tool/pslineprint.html): print ``stdin`` to postscript
+* [``paginate``](/pages/sth/tool/paginate.html): format lines with page numbers and headers
 
 
 ## Why Haskell?

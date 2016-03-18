@@ -1,5 +1,5 @@
 module STH.Lib.Text.Format.ASACarriageControl (
-  CCLine(), fromCCLine, renderCCLine, toCCLine, readCCLines
+  CCLine(..), fromCCLine, renderCCLine, toCCLine, readCCLines
 ) where
 
 import Control.Arrow ((>>>))
@@ -36,13 +36,14 @@ toCCLines = map toCCLine . getLines
 -}
 --toCCLine.S
 toCCLine :: String -> CCLine
-toCCLine =
-  columnIndices
+toCCLine "" = CCLine [""]
+toCCLine xs =
+  (columnIndices
     >>> filter (\(c,_) -> c /= ' ')          -- try omitting
     >>> sortBy (\(_,a) (_,b) -> compare a b) -- these lines
     >>> maxMonoSubseqsBy p
     >>> map (fromSparseList ' ')
-    >>> CCLine
+    >>> CCLine) xs
   where
     p u v = if snd u < snd v
               then True else False
