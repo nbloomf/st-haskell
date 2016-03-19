@@ -70,7 +70,7 @@ All of the "will not" tasks will be left for other tools to deal with; the virtu
 
 ### Modeling a Printer
 
-Now for the virtual line printer. We will think of a line printer as a machine which prints lines in the context of some basic internal state. Some state we can think of as configurable, but fixed: page margins, font size, line spacing, and page size. We use an extremely basic model of page geometry. Other state is updated as the line printer prints lines: the current page number and the current line number. (The ``pageIsDirty`` flag is set whenever the current page has text printed on it; this is needed later.)
+Now for the virtual line printer. We will think of a line printer as a machine which prints lines in the context of some basic internal state. Some state we can think of as configurable, but fixed: page margins, font size, line spacing, and page size. We use an extremely basic model of page geometry. Other state is updated as the line printer prints lines: the current page number and the current line number. (The ``pageInProcess`` flag is set whenever the current page has text printed on it; this is needed later.)
 
 
 ```haskell

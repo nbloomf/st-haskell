@@ -3,7 +3,7 @@ module STH.Lib.List (
   spanAtMostWhile, padToByAfter, maxMonoSubseqsBy,
   unfoldrMaybe, getRuns, fromRuns, padLast, padToLongerWith,
   diffList, diffLists, peelPrefix, takeBetween, breakAt,
-  getEltsByIndex
+  getEltsByIndex, chunksOf
 ) where
 
 import Data.Foldable (foldl')
@@ -226,6 +226,14 @@ takeBetween (u,v) = concat . unfoldr (firstCut (u,v))
       []     -> Nothing
       (_:zs) -> Just $ span (/= v) zs
 --takeBetween.E
+
+chunksOf :: Int -> [a] -> Maybe [[a]]
+chunksOf k xs
+  | k <= 0    = Nothing
+  | otherwise = Just $ chunk xs
+  where
+    chunk [] = []
+    chunk ys = let (as,bs) = splitAt k ys in as : chunk bs
 
 breakAt :: (Eq a) => a -> [a] -> [[a]]
 breakAt x = breakBy (== x)

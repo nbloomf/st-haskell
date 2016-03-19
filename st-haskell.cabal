@@ -141,3 +141,8 @@ Executable sth-paginate
   main-is:        STH/Paginate/Main.hs
   hs-source-dirs: src/
   build-depends:  base
+
+Executable sth-examine
+  main-is:        STH/Examine/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base

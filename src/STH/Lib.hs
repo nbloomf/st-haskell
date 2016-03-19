@@ -17,7 +17,8 @@ module STH.Lib (
   module STH.Lib.Text.Format.Line,
   module STH.Lib.Text.Format.Delimited,
   module STH.Lib.Text.Format.ASACarriageControl,
-  module STH.Lib.Monad.LinePrinter
+  module STH.Lib.Monad.LinePrinter,
+  module STH.Lib.ZipperList
 ) where
 
 import STH.Lib.XOR
@@ -39,3 +40,4 @@ import STH.Lib.Text.Format.Line
 import STH.Lib.Text.Format.Delimited
 import STH.Lib.Text.Format.ASACarriageControl
 import STH.Lib.Monad.LinePrinter
+import STH.Lib.ZipperList
