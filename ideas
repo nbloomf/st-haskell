@@ -3,10 +3,7 @@ charcollapse: collapse adjacent instances of characters. take range args.
   e.g. charcollapse "a" 2 replaces runs of 3 or more as with 2, but leaves 1 alone.
 promptlines: asks the user if each line in a file should be sent to stdout
   take prompt question as arg
-numberlines: number lines on stdin
-  (options: hex, starting from, separating character (def. tab)) (line -> delimited line)
 escape: add (mutually exclusive) options --not and --only that take character ranges.
   Extend character ranges to allow for named sets of characters, e.g. [:alnum:]
   take a mode flag: line mode does not escape \n
 cogrep: given a regular expression, generate random data which matches it
-wye: clone of tee
