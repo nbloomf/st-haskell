@@ -1,0 +1,5 @@
+sth-archive archlist --add file1.txt file2.txt; sth-archive archlist --list; rm archlist
+>>>
+file1.txt
+file2.txt
+>>>= 0

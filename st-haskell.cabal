@@ -146,3 +146,8 @@ Executable sth-examine
   main-is:        STH/Examine/Main.hs
   hs-source-dirs: src/
   build-depends:  base
+
+Executable sth-archive
+  main-is:        STH/Archive/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base, directory

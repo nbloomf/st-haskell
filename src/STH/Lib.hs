@@ -5,6 +5,7 @@ module STH.Lib (
   module STH.Lib.IO,
   module STH.Lib.List,
   module STH.Lib.Maybe,
+  module STH.Lib.Archive,
   module STH.Lib.Read,
   module STH.Lib.Read.CharSeq,
   module STH.Lib.Read.IntSet,
@@ -27,6 +28,7 @@ import STH.Lib.Int
 import STH.Lib.IO
 import STH.Lib.List
 import STH.Lib.Maybe
+import STH.Lib.Archive
 import STH.Lib.Read
 import STH.Lib.Read.CharSeq
 import STH.Lib.Read.IntSet

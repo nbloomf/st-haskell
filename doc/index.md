@@ -63,6 +63,7 @@ I will prefix the names of these ports with ``sth-``, to avoid clashing with exi
 * [``pslineprint``](/pages/sth/tool/pslineprint.html): print ``stdin`` to postscript
 * [``paginate``](/pages/sth/tool/paginate.html): format lines with page numbers and headers
 * [``examine``](/pages/sth/tool/examine.html): interactively view a file
+* [``archive``](/pages/sth/tool/archive.html): bundle text files
 
 
 ## Why Haskell?

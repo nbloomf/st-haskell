@@ -1,0 +1,7 @@
+sth-archive archput2 --add file1.txt file2.txt; sth-concat archput2; rm archput2
+>>>
+#file1.txt
+>hello
+#file2.txt
+>world
+>>>= 0

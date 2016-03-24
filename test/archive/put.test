@@ -1,0 +1,5 @@
+sth-archive archput --add file1.txt; sth-concat archput; rm archput
+>>>
+#file1.txt
+>hello
+>>>= 0

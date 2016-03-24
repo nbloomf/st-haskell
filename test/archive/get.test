@@ -1,0 +1,4 @@
+sth-archive archget --add file1.txt; sth-archive archget --get file1.txt; rm archget
+>>>
+hello
+>>>= 0
