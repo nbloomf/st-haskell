@@ -1,0 +1,5 @@
+sth-echo hello world | sth-linenumber
+>>>
+1	hello
+2	world
+>>>= 0

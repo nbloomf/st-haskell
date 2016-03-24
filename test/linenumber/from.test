@@ -1,0 +1,5 @@
+sth-echo hello world | sth-linenumber --pad --from 9
+>>>
+ 9 hello
+10 world
+>>>= 0

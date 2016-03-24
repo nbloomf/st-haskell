@@ -26,16 +26,16 @@ main = do
     (x:"--replace":xs) -> return (x, Replace, xs)
     otherwise          -> argErr >> exitFailure
 
+  -- read the archive
   arch <- do
     fileExists <- doesFileExist file
     case fileExists of
       True -> do
         x <- fmap getLines $ readFile file
-        case readStringArchive x of
-          Just a  -> return a
-          Nothing -> corErr >> exitFailure
+        return $ readStringArchive x
       False -> return emptyArchive
 
+  -- how we process the items
   let
     getItem str = case str of
       "-" -> do
@@ -45,28 +45,35 @@ main = do
         lns <- fmap getLines $ readFile str
         return (str, lns)
 
+  -- do the thing
   case act of
     List -> putStrLns $ getNames arch
 
     Add -> do
       items <- mapM getItem names
       case putItems arch items of
-        Nothing -> existsErr >> exitFailure
         Just x  -> putFileLns file $ writeStringArchive x
+        Nothing -> do
+          reportErrorMsgs
+            [ "name exists in archive." ]
+            >> exitFailure
 
     Get -> do
       case getItems arch names of
-        Nothing -> dneErr >> exitFailure
         Just xs -> mapM_ putStrLns xs
+        Nothing -> do
+          reportErrorMsgs
+            [ "name does not exist in archive." ]
+            >> exitFailure
 
     Remove -> do
-      putFileLns file
+      putStrLns
         $ writeStringArchive
         $ deleteItems arch names
 
     Replace -> do
       items <- mapM getItem names
-      putFileLns file
+      putStrLns
         $ writeStringArchive
         $ replaceItems arch items
 
@@ -83,15 +90,3 @@ argErr = reportErrorMsgs
   , "  archive ARCH --remove FILE ..."
   , "  archive ARCH --replace FILE ..."
   ]
-
-corErr :: IO ()
-corErr = reportErrorMsgs
-  [ "corrupt archive." ]
-
-existsErr :: IO ()
-existsErr = reportErrorMsgs
-  [ "name exists in archive." ]
-
-dneErr :: IO ()
-dneErr = reportErrorMsgs
-  [ "name does not exist in archive." ]

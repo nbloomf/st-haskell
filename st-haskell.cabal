@@ -151,3 +151,8 @@ Executable sth-archive
   main-is:        STH/Archive/Main.hs
   hs-source-dirs: src/
   build-depends:  base, directory
+
+Executable sth-linenumber
+  main-is:        STH/LineNumber/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base

@@ -1,0 +1,2 @@
+sth-archive archputput --add file1.txt file1.txt; rm archputput
+>>>= !0

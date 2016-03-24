@@ -1,4 +1,4 @@
-sth-archive archrem2 --add file1.txt file2.txt; sth-archive archrem2 --remove file1.txt; sth-concat archrem2; rm archrem2
+sth-archive archrem2 --add file1.txt file2.txt; sth-archive archrem2 --remove file1.txt; rm archrem2
 >>>
 #file2.txt
 >world

@@ -64,6 +64,7 @@ I will prefix the names of these ports with ``sth-``, to avoid clashing with exi
 * [``paginate``](/pages/sth/tool/paginate.html): format lines with page numbers and headers
 * [``examine``](/pages/sth/tool/examine.html): interactively view a file
 * [``archive``](/pages/sth/tool/archive.html): bundle text files
+* [``linenumber``](/pages/sth/tool/linenumber.html): number lines on ``stdin``
 
 
 ## Why Haskell?

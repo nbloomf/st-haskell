@@ -16,6 +16,7 @@ import Control.Monad (foldM)
 {- Types -}
 {---------}
 
+--Archive.S
 type Name = String
 
 data Item a = I
@@ -29,6 +30,7 @@ data Archive a
 
 emptyArchive :: Archive a
 emptyArchive = A []
+--Archive.E
 
 
 
@@ -36,15 +38,12 @@ emptyArchive = A []
 {- Reading and Writing -}
 {-----------------------}
 
+--ArchiveIO.S
 readArchiveBy ::
-  ([String] -> Maybe a) -> [String] -> Maybe (Archive a)
-readArchiveBy rd lns = do
-  let
-    xs = readArchive lns
-    try (name, strs) = do
-      x <- rd strs
-      return (I { nameOf = name, contentsOf = x })
-  fmap A $ mapM try xs
+  ([String] -> a) -> [String] -> Archive a
+readArchiveBy rd lns = A $ map try $ readArchive lns
+  where
+    try (name, strs) = I { nameOf = name, contentsOf = rd strs }
 
 readArchive :: [String] -> [(Name, [String])]
 readArchive = unfoldr rdFst
@@ -66,16 +65,20 @@ writeArchiveBy wr (A xs) = concatMap writeItem xs
     writeItem item
       = ('#' : nameOf item) : map ('>':) (wr $ contentsOf item)
 
-readStringArchive :: [String] -> Maybe (Archive [String])
-readStringArchive = readArchiveBy Just
+readStringArchive :: [String] -> Archive [String]
+readStringArchive = readArchiveBy id
 
 writeStringArchive :: Archive [String] -> [String]
 writeStringArchive = writeArchiveBy id
+--ArchiveIO.E
 
 
 
+--ArchiveOps.S
 getNames :: Archive a -> [Name]
 getNames (A xs) = map nameOf xs
+
+
 
 getItem :: Archive a -> Name -> Maybe a
 getItem (A xs) str = do
@@ -130,3 +133,4 @@ deleteItem (A (item:xs)) str =
 
 deleteItems :: Archive a -> [Name] -> Archive a
 deleteItems = foldl deleteItem
+--ArchiveOps.E

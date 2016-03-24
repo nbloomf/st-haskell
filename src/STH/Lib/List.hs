@@ -3,7 +3,7 @@ module STH.Lib.List (
   spanAtMostWhile, padToByAfter, maxMonoSubseqsBy,
   unfoldrMaybe, getRuns, fromRuns, padLast, padToLongerWith,
   diffList, diffLists, peelPrefix, takeBetween, breakAt,
-  getEltsByIndex, chunksOf
+  getEltsByIndex, chunksOf, padToByBefore
 ) where
 
 import Data.Foldable (foldl')
@@ -118,6 +118,11 @@ spanAtMostWhile k p xs
 padToByAfter :: Int -> a -> [a] -> [a]
 padToByAfter k z xs = take k (xs ++ repeat z)
 --padToByAfter.E
+
+--padToByBefore.S
+padToByBefore :: Int -> a -> [a] -> [a]
+padToByBefore k z xs = reverse $ padToByAfter k z (reverse xs)
+--padToByBefore.E
 
 
 padToLongerWith :: a -> [a] -> [a] -> ([a], [a])
