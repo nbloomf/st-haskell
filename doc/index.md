@@ -66,6 +66,10 @@ I will prefix the names of these ports with ``sth-``, to avoid clashing with exi
 * [``archive``](/pages/sth/tool/archive.html): bundle text files
 * [``linenumber``](/pages/sth/tool/linenumber.html): number lines on ``stdin``
 
+### Chapter 4: Sorting
+
+* [``bubble``](/pages/sth/tool/bubble.html): (bubble)sort lines on stdin
+
 
 ## Why Haskell?
 

@@ -1,0 +1,8 @@
+sth-echo h u e d j | sth-bubble
+>>>
+d
+e
+h
+j
+u
+>>>= 0

@@ -156,3 +156,8 @@ Executable sth-linenumber
   main-is:        STH/LineNumber/Main.hs
   hs-source-dirs: src/
   build-depends:  base
+
+Executable sth-bubble
+  main-is:        STH/Bubble/Main.hs
+  hs-source-dirs: src/
+  build-depends:  base

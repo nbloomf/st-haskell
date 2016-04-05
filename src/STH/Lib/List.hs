@@ -3,7 +3,7 @@ module STH.Lib.List (
   spanAtMostWhile, padToByAfter, maxMonoSubseqsBy,
   unfoldrMaybe, getRuns, fromRuns, padLast, padToLongerWith,
   diffList, diffLists, peelPrefix, takeBetween, breakAt,
-  getEltsByIndex, chunksOf, padToByBefore
+  getEltsByIndex, chunksOf, padToByBefore, bubble
 ) where
 
 import Data.Foldable (foldl')
@@ -254,3 +254,18 @@ breakBy p xs = case break p xs of
 getEltsByIndex :: (Int -> Bool) -> [a] -> [a]
 getEltsByIndex p xs = map snd $ filter (p . fst) $ zip [1..] xs
 --getEltsByIndex.E
+
+
+
+--bubble.S
+bubble :: (Ord a) => [a] -> [a]
+bubble xs = case accum False [] xs of
+  (True,  ys) -> bubble ys
+  (False, ys) -> ys
+  where
+    accum p zs (x:y:ys) = if x <= y
+      then accum p    (x:zs) (y:ys)
+      else accum True (y:zs) (x:ys)
+    accum p zs ys  = (p, reverse $ (reverse ys) ++ zs)
+--bubble.E
+
