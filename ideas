@@ -7,3 +7,4 @@ escape: add (mutually exclusive) options --not and --only that take character ra
   Extend character ranges to allow for named sets of characters, e.g. [:alnum:]
   take a mode flag: line mode does not escape \n
 cogrep: given a regular expression, generate random data which matches it
+declarative gui tool

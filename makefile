@@ -3,9 +3,7 @@ DOC = doc/index.md doc/formats.md
 SITEDIR = $(HOME)/documents/nbloomf.md/pages/sth/
 
 all: FORCE
-	cabal configure --user
-	cabal build
-	cabal install
+	/app/halcyon/halcyon install /home/nathan/code/st-haskell
 
 test: FORCE
 	shelltest --color --execdir test/ -- --threads=16 --hide-successes
