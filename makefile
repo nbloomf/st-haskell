@@ -13,7 +13,5 @@ doc: FORCE
 	for f in $(DOC) $(TOOLDOC); do \
 	  cat $$f | sth-import --with "&splice" > gen/$$f; \
 	done
-	cp -r gen/doc/. $(SITEDIR)
-	rm -r gen/
 
 FORCE:
