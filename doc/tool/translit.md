@@ -2,6 +2,7 @@
 title: Software Tools in Haskell: translit
 subtitle: transliterate or remove chars on stdin
 author: nbloomf
+tags: software tools, haskell
 ---
 
 The purpose of ``translit`` is to replace characters by other characters; it applies a mapping with signature ``Char -> Char`` to each character on stdin. (While simple, this is surprisingly useful.) The most succinct way to specify such a mapping is with two lists of characters, one denoting the domain of the character mapping and the other the codomain. For instance, calling
